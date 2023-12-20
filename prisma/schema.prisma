@@ -23,6 +23,7 @@ model User {
   parentPhoneNumber String
   parentEmail String
   classCode String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -30,6 +31,61 @@ model User {
 model Station {
   id String @id
   name String
+  choices Choices[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Choices {
+  id String @id
+  price BigInt
+  station Station @relation(fields: [stationId], references: [id])
+  stationId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt  
+}
+
+model JobRole {
+  id String @id
+  name String
+  description String @db.Text
+  salaryPay BigInt
+  monthlyPay BigInt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Session {
+  id String @id
+  sessionInitialInformation SessionInitialInformation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SessionInitialInformation {
+  id String @id
+  roleId String
+  userId String
+  session Session @relation(fields: [sessionId], references: [id])
+  sessionId String  
+  moneyInTheBank BigInt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SessionEventInformation {
+  id String @id
+  userId String
+  stationId String
+  moneyInTheBank BigInt
+  purchaseAmount BigInt
+  netMoneyInTheBank BigInt
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
