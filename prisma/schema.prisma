@@ -24,6 +24,8 @@ model User {
   parentEmail String
   classCode String?
 
+  myScore Score[] // one to many with score
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -47,45 +49,90 @@ model Choices {
   updatedAt DateTime @updatedAt  
 }
 
-model JobRole {
+model Job {
   id String @id
   name String
   description String @db.Text
-  salaryPay BigInt
-  monthlyPay BigInt
+  annualSalary BigInt
+  grossMonthlySalary BigInt
+  netMonthlySalary BigInt
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Session {
+model Room {
   id String @id
-  sessionInitialInformation SessionInitialInformation[]
+
+  roomInitialInformation RoomInitialInformation[] // one to many
+  roomStationInformation RoomStationInformation[] // one to many
+  roomInsuranceInformation RoomInsuranceInformation[] // one to many
+  scoreInformation Score[] // one to many
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model SessionInitialInformation {
+model RoomInitialInformation {
   id String @id
-  roleId String
   userId String
-  session Session @relation(fields: [sessionId], references: [id])
-  sessionId String  
+  jobId String
+  roomId String  
   moneyInTheBank BigInt
 
+  room Room @relation(fields: [roomId], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model SessionEventInformation {
+model RoomStationInformation {
   id String @id
   userId String
+  roomId String
   stationId String
   moneyInTheBank BigInt
   purchaseAmount BigInt
   netMoneyInTheBank BigInt
 
+  room Room @relation(fields: [roomId], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Insurance {
+  id String @id
+  name String
+  price BigInt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt  
+}
+
+model RoomInsuranceInformation {
+  id String @id
+  roomId String
+  userId String
+  insuranceId String
+  moneyInTheBank BigInt
+
+  room Room @relation(fields: [roomId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt  
+
+}
+
+model Score {
+  id String @id
+  roomId String
+  userId String
+  score BigInt
+
+  room Room @relation(fields: [roomId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt  
 }

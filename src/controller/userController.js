@@ -1,13 +1,13 @@
-import  {generateID}  from "../genericFunctions.js";
+import  {generateRandomId}  from "../genericFunctions.js";
 import { PrismaClient } from "@prisma/client";
 
 const db = new PrismaClient();
 
-export const createUser = async (req, res) => {
+export const create = async (req, res) => {
     try {
         const newUser = await db.user.create({
             data: {
-                id: generateID("user_"),
+                id: generateRandomId("user_"),
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
                 email: req.body.email,
