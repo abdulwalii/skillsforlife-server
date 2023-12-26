@@ -1,6 +1,7 @@
 import express from "express";
 import { Server } from "socket.io";
 import { createServer } from "http";
+import cors from 'cors';
 import route from "./src/routes/routes.js";
 import "dotenv/config";
 
@@ -11,7 +12,9 @@ app.use(
         extended: false,
     })
 );
-
+app.use(cors({
+    origin: '*'
+}));
 app.use("/", route);
 
 const httpServer = createServer(app);
@@ -22,10 +25,16 @@ const io = new Server(httpServer, {
 });
 
 io.on("connection", (socket) => {
-    // Room Creation
-    socket.on("createRoom", (roomId => {
-        
-    }));
+
+    // admin emit
+    socket.on('fromAdmin', (data) => {
+        console.log(data);
+        io.emit("fromServer", "born");
+    });
+
+    socket.on("fromClient", (arg) => {
+        io.emit("fromServer", "born");        
+    })
 });
 
 httpServer.listen(process.env.PORT, () => {

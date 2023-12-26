@@ -5,9 +5,9 @@ const db = new PrismaClient();
 
 export const create = async (req, res) => {
     try {
-        const newUser = await db.user.create({
+        const newUser = await db.player.create({
             data: {
-                id: generateRandomId("user_"),
+                id: generateRandomId("player_"),
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
                 email: req.body.email,
@@ -22,7 +22,7 @@ export const create = async (req, res) => {
             }
         });
 
-        res.status(200).send({message: newUser});
+        res.status(200).send({player: newUser, message: 'Successfull.'});
     } catch (error) {
         res.status(400).send({ message: error.message });
     }

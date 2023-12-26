@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model Player {
   id String @id @unique
   firstName String
   lastName String
@@ -75,7 +75,7 @@ model Room {
 
 model RoomInitialInformation {
   id String @id
-  userId String
+  playerId String
   jobId String
   roomId String  
   moneyInTheBank BigInt
@@ -88,7 +88,7 @@ model RoomInitialInformation {
 
 model RoomStationInformation {
   id String @id
-  userId String
+  playerId String
   roomId String
   stationId String
   moneyInTheBank BigInt
@@ -113,7 +113,7 @@ model Insurance {
 model RoomInsuranceInformation {
   id String @id
   roomId String
-  userId String
+  playerId String
   insuranceId String
   moneyInTheBank BigInt
 
@@ -127,11 +127,11 @@ model RoomInsuranceInformation {
 model Score {
   id String @id
   roomId String
-  userId String
+  playerId String
   score BigInt
 
   room Room @relation(fields: [roomId], references: [id])
-  user User @relation(fields: [userId], references: [id])
+  user Player @relation(fields: [playerId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt  
