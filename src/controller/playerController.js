@@ -30,7 +30,7 @@ export const create = async (req, res) => {
 
 export const fetchAll = async (req, res) => {
     try {
-        const users = await db.user.findMany();
+        const users = await db.player.findMany();
         res.status(200).send({users: users}); 
     } catch (error) {
         res.status(400).send({ message: error.message });    
@@ -38,7 +38,7 @@ export const fetchAll = async (req, res) => {
 }
 export const fetchOne = async (req, res) => {
     try {
-        const user = await db.user.findUnique({
+        const user = await db.player.findUnique({
             where: {
                 id: req.params.id
             }

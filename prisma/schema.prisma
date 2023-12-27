@@ -63,6 +63,7 @@ model Job {
 
 model Room {
   id String @id
+  name String
 
   roomInitialInformation RoomInitialInformation[] // one to many
   roomStationInformation RoomStationInformation[] // one to many
