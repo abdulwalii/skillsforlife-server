@@ -33,6 +33,8 @@ model Player {
 model Station {
   id String @id
   name String
+  bgImage String?
+  colorClass String?
   choices Choices[]
 
   createdAt DateTime @default(now())
@@ -41,7 +43,7 @@ model Station {
 
 model Choices {
   id String @id
-  price BigInt
+  price Float
   station Station @relation(fields: [stationId], references: [id])
   stationId String
 
@@ -53,9 +55,9 @@ model Job {
   id String @id
   name String
   description String @db.Text
-  annualSalary BigInt
-  grossMonthlySalary BigInt
-  netMonthlySalary BigInt
+  annualSalary Float
+  grossMonthlySalary Float
+  netMonthlySalary Float
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -79,7 +81,7 @@ model RoomInitialInformation {
   playerId String
   jobId String
   roomId String  
-  moneyInTheBank BigInt
+  moneyInTheBank Float
 
   room Room @relation(fields: [roomId], references: [id])
 
@@ -92,9 +94,9 @@ model RoomStationInformation {
   playerId String
   roomId String
   stationId String
-  moneyInTheBank BigInt
-  purchaseAmount BigInt
-  netMoneyInTheBank BigInt
+  moneyInTheBank Float
+  purchaseAmount Float
+  netMoneyInTheBank Float
 
   room Room @relation(fields: [roomId], references: [id])
 
@@ -105,7 +107,7 @@ model RoomStationInformation {
 model Insurance {
   id String @id
   name String
-  price BigInt
+  price Float
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt  
@@ -116,7 +118,7 @@ model RoomInsuranceInformation {
   roomId String
   playerId String
   insuranceId String
-  moneyInTheBank BigInt
+  moneyInTheBank Float
 
   room Room @relation(fields: [roomId], references: [id])
 
@@ -129,7 +131,7 @@ model Score {
   id String @id
   roomId String
   playerId String
-  score BigInt
+  score Int
 
   room Room @relation(fields: [roomId], references: [id])
   user Player @relation(fields: [playerId], references: [id])
