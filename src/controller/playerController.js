@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 
 const db = new PrismaClient();
 
-export const create = async (req, res) => {
+export const createOne = async (req, res) => {
     try {
         const newUser = await db.player.create({
             data: {
