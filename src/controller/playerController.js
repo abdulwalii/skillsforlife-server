@@ -5,7 +5,7 @@ const db = new PrismaClient();
 
 export const createOne = async (req, res) => {
     try {
-        const newUser = await db.player.create({
+        const newPlayer = await db.player.create({
             data: {
                 id: generateRandomId("player_"),
                 firstName: req.body.firstName,
@@ -22,7 +22,7 @@ export const createOne = async (req, res) => {
             }
         });
 
-        res.status(200).send({player: newUser, message: 'Successfull.'});
+        res.status(200).send({player: newPlayer, message: 'Successfull.'});
     } catch (error) {
         res.status(400).send({ message: error.message });
     }
@@ -41,6 +41,9 @@ export const fetchOne = async (req, res) => {
         const user = await db.player.findUnique({
             where: {
                 id: req.params.id
+            },
+            include: {
+                
             }
         });
         res.status(200).send({user: user}); 

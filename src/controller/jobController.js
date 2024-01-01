@@ -15,3 +15,26 @@ export const fetchAll = async(req ,res) => {
 
 }
 
+export const fetchRandomJob = async () => {
+    try {
+        let jobs = await db.job.findMany({
+            select: {
+                id: true,
+            },
+        });
+
+        let jobIds = jobs.map((job) => job.id);
+        let randomJobId = Math.floor(Math.random() * jobIds.length);
+
+        let randomJob = await db.job.findUnique({
+            where: {
+                id: jobIds[randomJobId]
+            }
+        })
+
+        return randomJob
+    } catch (error) {
+        return error.message
+    }
+} 
+

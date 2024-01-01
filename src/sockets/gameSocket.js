@@ -1,5 +1,5 @@
 import  {generateRandomId}  from "../genericFunctions.js";
-import {createRoom, findRoom} from '../controller/roomController.js'
+import {createRoom, findRoom, playerJoinedRoom} from '../controller/roomController.js'
 
 export const gameSocket = (io) => {
 
@@ -8,7 +8,7 @@ export const gameSocket = (io) => {
         // create room
         socket.on("createRoom", (roomName) => {
 
-            const roomId = generateRandomId('room_');
+            const roomId = generateString(8);
 
             createRoom(roomName, roomId);
 
@@ -18,12 +18,15 @@ export const gameSocket = (io) => {
         });
 
         // join room
-        socket.on('joinRoom', (roomId) => {
+        socket.on('joinRoom', async (data) => {
 
-            let room = findRoom(roomId);
+            let room = findRoom(data.roomId);
             socket.join(room.name);
-            
-            io.to(room.name).emit('')
+
+            let playerJoinedRoomInformation = await playerJoinedRoom(data)
+            socket.emit('roomJoined', playerJoinedRoomInformation)
+
+            io.to(room.name).emit('playerJoinedAdmin', playerJoinedRoomInformation)
         })
     });
 

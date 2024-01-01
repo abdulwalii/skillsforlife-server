@@ -82,7 +82,7 @@ model RoomInitialInformation {
   playerId String
   jobId String
   roomId String  
-  moneyInTheBank Float
+  moneyInTheBank Float?
 
   room Room @relation(fields: [roomId], references: [id])
 
