@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import {v4 as uuidv4} from 'uuid';
+import bcrypt from 'bcrypt'
 
 const db = new PrismaClient();
 
@@ -26,3 +27,28 @@ export const getAllJobs = async () => {
         return error.message
     }
 }
+
+export const generateHash = async (password) => {
+    const saltRounds = 10;
+    return new Promise ((resolve ,reject) => {
+        bcrypt.hash(password, saltRounds, (err, hash) => {
+            if (err) {
+                reject(err)
+            } else{
+                resolve(hash)
+            }
+        })
+    })
+} 
+
+export const validateHash = async (password, hash) => {
+    return new Promise ((resolve ,reject) => {
+        bcrypt.compare(password, hash, (err, result) => {
+            if (err) {
+                reject(err)
+            } else{
+                resolve(result)
+            }
+        })
+    })
+} 

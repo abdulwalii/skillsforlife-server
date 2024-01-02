@@ -3,12 +3,17 @@ import * as file from '../uploadeFiles.js'
 import * as playerController from '../controller/playerController.js'; 
 import * as jobController from '../controller/jobController.js'; 
 import * as stationController from '../controller/stationController.js'; 
+import * as authController from '../controller/authController.js'; 
+import * as mdv from '../../middleware/token.js'
 
 const route = express.Router();
 
 route.get('/api', (req ,res) => {
     res.status(200).send("Hello, Welcome To Skills For Life Server.");
 });
+
+route.post('/api/admin/login', authController.login)
+route.get('/api/admin/verify', mdv.verifyToken, authController.verify)
 
 route.post('/api/player/create', playerController.createOne)
 route.get('/api/player/fetchAll', playerController.fetchAll)

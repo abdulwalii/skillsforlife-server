@@ -1,16 +1,7 @@
-// program to generate random strings
+// import {users} from "./prisma/users.js";
+import { validateHash } from "./src/genericFunctions.js";
 
-// declare all characters
-const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-function generateString(length) {
-    let result = ' ';
-    const charactersLength = characters.length;
-    for ( let i = 0; i < length; i++ ) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
+console.log(validateHash("0000", '$2b$10$kgo44qwMg42rPDSbeilV.OmA/Ml.COK3xK.UI/bCrdsb0XPbUDy5O'))
 
-    return result;
-}
-
-console.log(generateString(10));
+// console.log(await validateHash('0000'))

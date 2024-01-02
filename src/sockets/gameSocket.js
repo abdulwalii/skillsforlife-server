@@ -1,4 +1,4 @@
-import  {generateRandomId}  from "../genericFunctions.js";
+import  {generateRandomId, generateString}  from "../genericFunctions.js";
 import {createRoom, findRoom, playerJoinedRoom} from '../controller/roomController.js'
 
 export const gameSocket = (io) => {
@@ -6,14 +6,18 @@ export const gameSocket = (io) => {
     io.on("connection", (socket) => {
 
         // create room
-        socket.on("createRoom", (roomName) => {
-
+        socket.on("createRoom", (arg) => {
+            
             const roomId = generateString(8);
-
-            createRoom(roomName, roomId);
-
-            socket.join(roomName);
-            socket.emit("roomCreated", roomId);
+            
+            createRoom(arg.roomName, roomId);            
+            socket.join(arg.roomName);
+            
+            let welcomeObj = {
+                message: `Hi ${arg.userName}, Welcome to ${arg.roomName}`,
+                roomId: roomId
+            }
+            io.to(arg.roomName).emit('welcomeRoom', welcomeObj)
 
         });
 

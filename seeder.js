@@ -1,10 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 import {JOBS} from "./prisma/jobs.js";
+import { USERS } from "./prisma/users.js";
 
 const db = new PrismaClient();
 
 async function main() {
-    await db.job.createMany({data: JOBS})
+    // await db.job.createMany({data: JOBS})
+    // await db.user.createMany({data: USERS})
+    
 }
 main()
   .then(async () => {
