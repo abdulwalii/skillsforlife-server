@@ -33,8 +33,10 @@ export const findRoom = async (roomId) => {
 
 export const playerJoinedRoom = async (data) => {
     try {
+
         // data contains playerId and roomId
         let randomJob = await fetchRandomJob();
+
         const newRoomInitialInformation = await db.roomInitialInformation.create({
             data: {
                 id: generateRandomId('roomInitial_'),
@@ -44,10 +46,10 @@ export const playerJoinedRoom = async (data) => {
                 moneyInTheBank: randomJob.netMonthlySalary
             }
         });
-        let player = db.player.findUnique({
+        let player = await db.player.findUnique({
             where: {
-                id: data.playerId
-            }
+                id: newRoomInitialInformation.playerId,
+            },
         })
         return {player: player, randomJob: randomJob, roomInitialInformation: newRoomInitialInformation};
     } catch (error) {

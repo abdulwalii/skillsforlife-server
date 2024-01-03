@@ -33,7 +33,7 @@ model Player {
   parentPhoneNumber String
   parentEmail String
   classCode String?
-
+  
   myScore Score[] // one to many with score
 
   createdAt DateTime @default(now())
@@ -145,7 +145,7 @@ model Score {
   score Int
 
   room Room @relation(fields: [roomId], references: [id])
-  user Player @relation(fields: [playerId], references: [id])
+  player Player @relation(fields: [playerId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt  
