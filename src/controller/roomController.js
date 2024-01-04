@@ -1,22 +1,37 @@
-import  {generateRandomId}  from "../genericFunctions.js";
+import  {generateRandomId, generateString}  from "../genericFunctions.js";
 import { fetchRandomJob } from "./jobController.js";
 import { PrismaClient } from "@prisma/client";
 
 const db = new PrismaClient();
 
-export const createRoom = async (roomName, roomId) => {
+
+export const createRoom = async (req, res) => {
     try {
         const newRoom = await db.room.create({
             data: {
-                id: roomId,
-                name: roomName
+                id: generateString(8),
+                name: req.body.roomName
             }
         });
-        return newRoom;
+        res.status(200).send({room: newRoom})
     } catch (error) {
-        return error.message
+        res.status(400).send({message: error.message }); 
     }
 }
+
+// export const createRoom = async (roomName, roomId) => {
+//     try {
+//         const newRoom = await db.room.create({
+//             data: {
+//                 id: roomId,
+//                 name: roomName
+//             }
+//         });
+//         return newRoom;
+//     } catch (error) {
+//         return error.message
+//     }
+// }
 
 export const findRoom = async (roomId) => {
     try {

@@ -5,6 +5,8 @@ import {
     playerJoinedRoom,
 } from "../controller/roomController.js";
 
+import { getUser } from "../controller/authController.js";
+
 export const gameSocket = (io) => {
     io.on("connection", (socket) => {
 
@@ -34,9 +36,20 @@ export const gameSocket = (io) => {
             const socketsInRoom = io.sockets.adapter.rooms.get(room.name);
             console.log("Sockets in room:", socketsInRoom);
 
-            let playerJoinedRoomInformation = await playerJoinedRoom(data);
+            if(data.isAdmin){
+                let user = await getUser(data.playerId);
 
-            io.to(room.name).emit("playerJoined", playerJoinedRoomInformation);
+                let welcomeObj = {
+                    message: `Hi ${user.userName}, Welcome to ${room.name}`,
+                    roomId: room.id,
+                };
+
+                io.to(room.name).emit("welcomeAdminRoom", welcomeObj);                
+            }else{
+                let playerJoinedRoomInformation = await playerJoinedRoom(data);
+    
+                io.to(room.name).emit("playerJoined", playerJoinedRoomInformation);
+            }
         });
 
         // disconnet socket

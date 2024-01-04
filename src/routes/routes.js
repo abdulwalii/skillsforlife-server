@@ -3,6 +3,7 @@ import * as file from '../uploadeFiles.js'
 import * as playerController from '../controller/playerController.js'; 
 import * as jobController from '../controller/jobController.js'; 
 import * as stationController from '../controller/stationController.js'; 
+import * as roomController from '../controller/roomController.js'; 
 import * as authController from '../controller/authController.js'; 
 import * as mdv from '../../middleware/token.js'
 
@@ -22,6 +23,9 @@ route.get('/api/player/fetchOne/:id', playerController.fetchOne)
 route.get('/api/job/fetchAll', jobController.fetchAll)
 
 route.get('/api/station/fetchAll', stationController.fetchAll)
+
+route.post('/api/room/create', roomController.createRoom)
+
 
 // route.post('/api/station/adbg/:id', file.uploadStationImage.single('image'), stationController.addBgImage)
 // route.post('/api/station/adth/:id', file.uploadStationImage.single('image'), stationController.addThumbImage)

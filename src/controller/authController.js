@@ -48,3 +48,16 @@ export const verify = async (req, res) => {
         res.status(400).send({message: error.message})
     }
 }
+
+export const getUser = async (id) => {
+    try {
+        const user = await db.user.findUnique({
+            where: {
+                id: id
+            }
+        })
+        return user
+    } catch (error) {
+        return error.message
+    }
+}
