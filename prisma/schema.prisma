@@ -118,7 +118,8 @@ model RoomStationInformation {
 model Insurance {
   id String @id
   name String
-  price Float
+  price Int
+  img Json?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt  

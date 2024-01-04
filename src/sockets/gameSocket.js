@@ -36,7 +36,7 @@ export const gameSocket = (io) => {
             const socketsInRoom = io.sockets.adapter.rooms.get(room.name);
             console.log("Sockets in room:", socketsInRoom);
 
-            if(data.isAdmin){
+            if (data.isAdmin) {
                 let user = await getUser(data.playerId);
 
                 let welcomeObj = {
@@ -44,10 +44,10 @@ export const gameSocket = (io) => {
                     roomId: room.id,
                 };
 
-                io.to(room.name).emit("welcomeAdminRoom", welcomeObj);                
-            }else{
+                io.to(room.name).emit("welcomeAdminRoom", welcomeObj);
+            } else {
                 let playerJoinedRoomInformation = await playerJoinedRoom(data);
-    
+
                 io.to(room.name).emit("playerJoined", playerJoinedRoomInformation);
             }
         });
