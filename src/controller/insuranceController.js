@@ -19,3 +19,12 @@ export const createInsurance = async (req, res) => {
         res.status(400).send({message: error.message})
     }
 }
+
+export const fetchAll = async (req, res) => {
+    try {
+        let insurances = await db.insurance.findMany();
+        res.status(200).send({insurances: insurances})
+    } catch (error) {
+        res.status(400).send({message: error.message})
+    }
+}
