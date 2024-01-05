@@ -27,7 +27,6 @@ route.get('/api/insurance/fetchAll', insuranceController.fetchAll)
 
 route.post('/api/room/create', roomController.createRoom)
 
-
 route.post('/api/insurance/create', file.uploadInsuranceImage.single('image'),insuranceController.createInsurance)
 
 

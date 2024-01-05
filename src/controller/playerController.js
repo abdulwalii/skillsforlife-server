@@ -18,6 +18,7 @@ export const createOne = async (req, res) => {
                 parentFullName: req.body.parentFullName,
                 parentEmail: req.body.parentEmail,
                 parentPhoneNumber: req.body.parentPhoneNumber,
+                school: req.body.school,
                 classCode: req.body.classCode ? req.body.classCode : null
             }
         });
@@ -43,7 +44,8 @@ export const fetchOne = async (req, res) => {
                 id: req.params.id
             },
             include: {
-                
+                myScore: true,
+                roomInitialInfo: true
             }
         });
         res.status(200).send({user: user}); 

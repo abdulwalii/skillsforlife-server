@@ -26,15 +26,17 @@ model Player {
   lastName String
   grade String
   phoneNumber String
-  email String @unique
+  email String
   city String
   state String
   parentFullName String
   parentPhoneNumber String
   parentEmail String
   classCode String?
+  school String?
   
   myScore Score[] // one to many with score
+  roomInitialInfo RoomInitialInformation[] // one to many with RoomInitialInformation
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -70,6 +72,8 @@ model Job {
   grossMonthlySalary Float
   netMonthlySalary Float
 
+  roomInitialInformation RoomInitialInformation[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -94,7 +98,9 @@ model RoomInitialInformation {
   roomId String  
   moneyInTheBank Float?
 
+  job Job @relation(fields: [jobId], references: [id])
   room Room @relation(fields: [roomId], references: [id])
+  player Player @relation(fields: [playerId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
