@@ -23,11 +23,12 @@ route.get('/api/player/fetchOne/:id', playerController.fetchOne)
 
 route.get('/api/job/fetchAll', jobController.fetchAll)
 route.get('/api/station/fetchAll', stationController.fetchAll)
-route.get('/api/insurance/fetchAll', insuranceController.fetchAll)
 
 route.post('/api/room/create', roomController.createRoom)
 
-route.post('/api/insurance/create', file.uploadInsuranceImage.single('image'),insuranceController.createInsurance)
+route.get('/api/insurance/fetchAll', insuranceController.fetchAll)
+route.post('/api/insurance/buyInsurance', insuranceController.buyInsurance)
+// route.post('/api/insurance/create', file.uploadInsuranceImage.single('image'),insuranceController.createInsurance)
 
 
 export default route

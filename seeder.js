@@ -5,8 +5,9 @@ import { USERS } from "./prisma/users.js";
 const db = new PrismaClient();
 
 async function main() {
-    // await db.job.createMany({data: JOBS})
-    // await db.user.createMany({data: USERS})
+    await db.job.deleteMany({});
+    await db.job.createMany({data: JOBS});
+    // await db.user.createMany({data: USERS});
     
 }
 main()

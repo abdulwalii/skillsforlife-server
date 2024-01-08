@@ -54,11 +54,16 @@ export const gameSocket = (io) => {
 
         // start Game
 
+        socket.on('startGame', async(data) => {
+            let room = await findRoom(data.roomId);
+            io.to(room.name).emit('gameStart', true);
+        })
+
 
         // disconnet socket
 
         socket.on('disconnect', () => {
-            console.log(`Socket ${socket.id} disconnected`);
+            // console.log(`Socket ${socket.id} disconnected`);
         });
     });
 };

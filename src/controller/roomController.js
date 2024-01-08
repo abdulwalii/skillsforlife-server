@@ -49,6 +49,19 @@ export const findRoom = async (roomId) => {
 export const playerJoinedRoom = async (data) => {
     try {
 
+        // check if player joined already
+
+        let playerAlreadyJoined = await db.roomInitialInformation.findFirst({
+            where: {
+                playerId: data.playerId,
+                roomId: data.roomId
+            }
+        });
+
+        if(playerAlreadyJoined == null) {
+            
+        }
+        
         // data contains playerId and roomId
         let randomJob = await fetchRandomJob();
 
@@ -76,7 +89,7 @@ export const playerJoinedRoom = async (data) => {
             include: {
             }
         })
-        return {player: player, job: randomJob, roomInitialInformation: roomInitialInfo};
+        return {player: player, job: randomJob, roomInitialInformation: roomInitialInfo, playerAlready: playerAlreadyJoined};
     } catch (error) {
         return error.message
     }

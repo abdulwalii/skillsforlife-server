@@ -28,3 +28,31 @@ export const fetchAll = async (req, res) => {
         res.status(400).send({message: error.message})
     }
 }
+
+export const buyInsurance = async (req, res) => {
+    try {
+        let player = await db.player.findUnique({
+            where: {
+                id: req.body.playerId
+            },
+            include: {
+                roomInitialInfo: true,
+                myScore: true
+            }
+        });
+        // let newInsurance = await db.RoomInsuranceInformation.create({
+        //     data: {
+        //         id: generateRandomId('roomInsurInfo_'),
+        //         roomId: req.body.roomId,
+        //         playerId: req.body.playerId,
+        //         insuranceId: req.body.insuranceId,
+        //         moneyInTheBank: ``
+        //     }
+        // })
+
+        res.status(200).send({data: player})
+    } catch (error) {
+        res.status(400).send({message: error.message})
+        
+    }
+}
