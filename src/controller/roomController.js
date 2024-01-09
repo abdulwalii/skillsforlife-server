@@ -49,16 +49,29 @@ export const findRoom = async (roomId) => {
 export const playerJoinedRoom = async (data) => {
     try {
 
-        // check if player joined already
+        let player = await db.player.findUnique({
+            where: {
+                id: data.playerId,
+            },
+            include: {
+            }
+        })
 
-        let playerAlreadyJoined = await db.roomInitialInformation.findFirst({
+        // check if player joined previously
+
+        let roomInitialAlreadyExist = await db.roomInitialInformation.findFirst({
             where: {
                 playerId: data.playerId,
                 roomId: data.roomId
+            },
+            include: {
+                job: true
             }
         });
 
-        if(playerAlreadyJoined == null) {
+        if(roomInitialAlreadyExist != null) {
+
+            return {player: player, job: roomInitialAlreadyExist.job, roomInitialInformation: roomInitialAlreadyExist};
             
         }
         
@@ -82,14 +95,8 @@ export const playerJoinedRoom = async (data) => {
                 job: true
             }
         })
-        let player = await db.player.findUnique({
-            where: {
-                id: newRoomInitialInformation.playerId,
-            },
-            include: {
-            }
-        })
-        return {player: player, job: randomJob, roomInitialInformation: roomInitialInfo, playerAlready: playerAlreadyJoined};
+
+        return {player: player, job: randomJob, roomInitialInformation: roomInitialInfo};
     } catch (error) {
         return error.message
     }

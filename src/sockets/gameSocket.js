@@ -48,6 +48,7 @@ export const gameSocket = (io) => {
             } else {
                 let playerJoinedRoomInformation = await playerJoinedRoom(data);
 
+                io.to(room.name).to(socket.id).emit("IJoined", playerJoinedRoomInformation);                
                 io.to(room.name).emit("playerJoined", playerJoinedRoomInformation);
             }
         });

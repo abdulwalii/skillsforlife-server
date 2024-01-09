@@ -136,7 +136,6 @@ model RoomInsuranceInformation {
   roomId String
   playerId String
   insuranceId String
-  moneyInTheBank Float
 
   room Room @relation(fields: [roomId], references: [id])
 

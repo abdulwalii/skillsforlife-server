@@ -52,3 +52,32 @@ export const validateHash = async (password, hash) => {
         })
     })
 } 
+
+export const updateRoomInitialInfoMoney = async (playerId, roomId, money) => {
+    try {
+        const updatedRoomInfo = await db.roomInitialInformation.updateMany({
+            where: {
+                playerId: playerId,
+                roomId: roomId
+            },
+            data: {
+                moneyInTheBank: money
+            }
+        });
+        return updatedRoomInfo
+    } catch (error) {
+        return error.message
+    }
+}
+
+export const findNullKeys = async (obj) => {
+    const nullKeys = [];
+  
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key) && (obj[key] === null || obj[key] === '' )) {
+        nullKeys.push(key);
+      }
+    }
+  
+    return nullKeys;
+  }

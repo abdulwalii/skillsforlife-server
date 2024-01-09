@@ -1,4 +1,4 @@
-import { generateRandomId, validateHash } from "../genericFunctions.js";
+import { generateRandomId, validateHash, updateRoomInitialInfoMoney, findNullKeys } from "../genericFunctions.js";
 import { PrismaClient } from "@prisma/client";
 
 const db = new PrismaClient();
@@ -31,28 +31,49 @@ export const fetchAll = async (req, res) => {
 
 export const buyInsurance = async (req, res) => {
     try {
-        let player = await db.player.findUnique({
+
+        let nullKeys = await findNullKeys(req.body);
+
+        if(nullKeys.length > 0) {
+            return res.status(400).send({message: 'Incomplete Information', nullKeys: nullKeys})
+        }        
+
+        // get player's roominitialinformation.
+        let roomInitialInfo = await db.roomInitialInformation.findFirst({
             where: {
-                id: req.body.playerId
-            },
-            include: {
-                roomInitialInfo: true,
-                myScore: true
+                playerId: req.body.playerId,
+                roomId: req.body.roomId
+            }
+        })
+
+        // get insurance information that player wants to buy.        
+        let insurance = await db.Insurance.findUnique({
+            where: {
+                id: req.body.insuranceId
+            }
+        })
+        
+        // new money in the bank after purchase
+        const newMoney = roomInitialInfo.moneyInTheBank - insurance.price;
+
+        // create insurance information that player purchased
+        let newInsuranceInformation = await db.RoomInsuranceInformation.create({
+            data: {
+                id: generateRandomId('roomInsurInfo_'),
+                roomId: req.body.roomId,
+                playerId: req.body.playerId,
+                insuranceId: req.body.insuranceId,                
             }
         });
-        // let newInsurance = await db.RoomInsuranceInformation.create({
-        //     data: {
-        //         id: generateRandomId('roomInsurInfo_'),
-        //         roomId: req.body.roomId,
-        //         playerId: req.body.playerId,
-        //         insuranceId: req.body.insuranceId,
-        //         moneyInTheBank: ``
-        //     }
-        // })
+        
+        // update the money in the banck in roomInitialInformation
+        const updatedRoomInfo = await updateRoomInitialInfoMoney(req.body.playerId, req.body.roomId, newMoney)
 
-        res.status(200).send({data: player})
+        res.status(200).send({updatedRoomInitialInfo: updatedRoomInfo, newInsuranceInformation: newInsuranceInformation})
     } catch (error) {
         res.status(400).send({message: error.message})
         
     }
 }
+
+
