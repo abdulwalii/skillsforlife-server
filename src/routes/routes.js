@@ -23,6 +23,7 @@ route.get('/api/player/fetchOne/:id', playerController.fetchOne)
 
 route.get('/api/job/fetchAll', jobController.fetchAll)
 route.get('/api/station/fetchAll', stationController.fetchAll)
+route.post('/api/station/update', stationController.updateOne)
 
 route.post('/api/room/create', roomController.createRoom)
 

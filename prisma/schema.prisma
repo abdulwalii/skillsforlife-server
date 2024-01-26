@@ -48,6 +48,7 @@ model Station {
   bgImage Json?
   thumbnailImage Json?
   colorClass String?
+  code String?
   choices Choices[]
 
   createdAt DateTime @default(now())
@@ -61,7 +62,7 @@ model Choices {
   stationId String
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt  
+  updatedAt DateTime @updatedAt
 }
 
 model Job {
