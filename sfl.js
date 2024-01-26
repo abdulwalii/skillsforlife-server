@@ -11,7 +11,7 @@ const app = express();
 app.use(express.json());
 app.use('/assets', express.static('assets'));
 app.use(express.urlencoded({extended: false}));
-app.use(cors({origin: ['https://adminskillsforlife.staginganideos.com', 'http://localhost:8080']}));
+app.use(cors({origin: "*"}));
 app.use("/", route);
 
 const httpServer = createServer(app);
