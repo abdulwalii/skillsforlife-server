@@ -3,19 +3,24 @@ import { Server } from "socket.io";
 import { createServer } from "http";
 import cors from "cors";
 import route from "./src/routes/routes.js";
-import {gameSocket} from "./src/sockets/gameSocket.js";
+import { gameSocket } from "./src/sockets/gameSocket.js";
 import "dotenv/config";
 
 const app = express();
 
 app.use(express.json());
 app.use('/assets', express.static('assets'));
-app.use(express.urlencoded({extended: false}));
-app.use(cors({origin: "*"}));
+app.use(express.urlencoded({ extended: false }));
+app.use(cors({ origin: "*" }));
 app.use("/", route);
 
 const httpServer = createServer(app);
-const io = new Server(httpServer, {cors: {origin: "*",}});
+const io = new Server(httpServer, { 
+    cors: { 
+        origin: ["http://localhost:8080"],
+        credentials: true
+    } 
+});
 
 gameSocket(io);
 
