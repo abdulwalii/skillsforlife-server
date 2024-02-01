@@ -15,15 +15,15 @@ app.use(cors({ origin: "*" }));
 app.use("/", route);
 
 const httpServer = createServer(app);
-const io = new Server(httpServer, { 
+const io = new Server(httpServer, {   
+    path: process.env.NODE_ENV == 'development' ? '/socket.io' : 'skillsforlife/socket.io',
     cors: { 
-        origin: ["http://localhost:8080"],
-        credentials: true
+        origin: '*'
     } 
 });
 
 gameSocket(io);
 
 httpServer.listen(process.env.PORT, () => {
-    console.log(`Listening on port ${process.env.PORT}`);
+    console.log(`Listening on port ${process.env.PORT}, ${process.env.NODE_ENV}`);
 });
