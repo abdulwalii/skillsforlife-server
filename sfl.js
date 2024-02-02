@@ -1,10 +1,12 @@
 import express from "express";
 import { Server } from "socket.io";
 import { createServer } from "http";
+import * as https from 'https';
 import cors from "cors";
 import route from "./src/routes/routes.js";
 import { gameSocket } from "./src/sockets/gameSocket.js";
 import "dotenv/config";
+import fs from 'node:fs';
 
 const app = express();
 
@@ -14,9 +16,21 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors({ origin: "*" }));
 app.use("/", route);
 
-const httpServer = createServer(app);
+let isProduction = process.env.NODE_ENV == 'production' ? true : false;
+let httpServer = null;
+
+if(isProduction){
+    let opt = {
+        key: fs.readFileSync('./etc/letsencrypt/live/virtualrealitycreators.com/privekey.pem'),
+        cert: fs.readFileSync('./etc/letsencrypt/live/virtualrealitycreators.com/cert.pem')
+    }
+    httpServer = https.createServer(opt, app);
+    
+}else{
+    httpServer = createServer(app);
+}
+
 const io = new Server(httpServer, {   
-    // path: process.env.NODE_ENV == 'development' ? '/socket.io' : '/skillsforlife-server/socket.io',
     cors: { 
         origin: '*'
     } 
@@ -25,5 +39,5 @@ const io = new Server(httpServer, {
 gameSocket(io);
 
 httpServer.listen(process.env.PORT, () => {
-    console.log(`Listening on port ${process.env.PORT}, ${process.env.NODE_ENV}`);
+    console.log(`Listening on port ${process.env.PORT}, ${isProduction}`);
 });
