@@ -16,7 +16,7 @@ app.use("/", route);
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {   
-    path: process.env.NODE_ENV == 'development' ? '/socket.io' : '/skillsforlife-server/socket.io',
+    // path: process.env.NODE_ENV == 'development' ? '/socket.io' : '/skillsforlife-server/socket.io',
     cors: { 
         origin: '*'
     } 
