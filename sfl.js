@@ -21,8 +21,8 @@ let httpServer = null;
 
 if(isProduction){
     let opt = {
-        key: fs.readFileSync('./etc/letsencrypt/live/virtualrealitycreators.com/privekey.pem'),
-        cert: fs.readFileSync('./etc/letsencrypt/live/virtualrealitycreators.com/cert.pem')
+        key: fs.readFileSync('/etc/letsencrypt/live/virtualrealitycreators.com/privekey.pem'),
+        cert: fs.readFileSync('/etc/letsencrypt/live/virtualrealitycreators.com/cert.pem')
     }
     httpServer = https.createServer(opt, app);
     
