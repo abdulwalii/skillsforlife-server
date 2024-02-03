@@ -30,7 +30,7 @@ route.post('/api/room/create', roomController.createRoom)
 route.get('/api/insurance/fetchAll', insuranceController.fetchAll)
 route.post('/api/insurance/buyInsurance', insuranceController.buyInsurance)
 
-// route.post('/api/insurance/create', file.uploadInsuranceImage.single('image'),insuranceController.createInsurance)
+route.post('/api/insurance/create', file.uploadInsuranceImage.single('image'),insuranceController.createInsurance)
 
 
 export default route
