@@ -29,6 +29,9 @@ export const fetchRoom = async (req, res) => {
                 id: req.params.id
             }
         })
+        if(room == null){
+            return res.status(400).send({room: room})
+        }
         res.status(200).send({room: room})
 
     } catch (error) {
