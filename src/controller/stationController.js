@@ -45,7 +45,11 @@ export const fetchAll = async (req, res) => {
     try {
         let stations = await db.station.findMany({
             include: {
-                choices: true
+                choices: {
+                    include: {
+                        internalChoices: true
+                    }
+                }
             }
         });
         res.status(200).send({ stations: stations })
@@ -54,3 +58,41 @@ export const fetchAll = async (req, res) => {
     }
 }
 
+export const addChoiceToStation = async (req, res) => {
+    try {
+        let newChoice = await db.choices.create({
+            data: {
+                id: generateRandomId('choice_'),
+                stationId: req.body.stationId,
+                name: req.body.name,
+                price: req.body.price,
+                duration: req.body.duration,
+                taxCredit: req.body.taxCredit,
+                growthInPct: req.body.growthInPct,
+                extraInfo: req.body.extraInfo
+            }
+        });
+        res.status(200).send({ choice: newChoice, message: "Choice Added Successfully." });
+
+    } catch (error) {        
+        res.status(400).send({ message: error.message });
+    }
+}
+
+export const addInternalChoiceToStation = async (req, res) => {
+    try {
+        let newInternalChoice = await db.InternalChoices.create({
+            data: {
+                id: generateRandomId('intChoice_'),
+                choiceId: req.body.choiceId,
+                name: req.body.name,
+                price: req.body.price,
+                duration: req.body.duration,
+            }
+        });
+        res.status(200).send({ internalChoice: newInternalChoice, message: "Internal Choice Added Successfully." });
+
+    } catch (error) {        
+        res.status(400).send({ message: error.message });
+    }
+}

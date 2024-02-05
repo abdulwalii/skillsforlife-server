@@ -57,9 +57,30 @@ model Station {
 
 model Choices {
   id String @id
-  price Float
+  name String
+  price Float?
+  duration String?
+  taxCredit Int?
+  growthInPct Int?
+  extraInfo String?
   station Station @relation(fields: [stationId], references: [id])
   stationId String
+
+  internalChoices InternalChoices[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model InternalChoices {
+  id String @id
+
+  name String
+  price Float?
+  duration String?
+
+  choice Choices @relation(fields: [choiceId], references: [id])
+  choiceId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
