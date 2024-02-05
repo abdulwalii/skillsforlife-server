@@ -21,6 +21,9 @@ export const createRoom = async (req, res) => {
 
 export const fetchRoom = async (req, res) => {
     try {
+        if(req.params.id == undefined){
+            return res.status(400).send({message: 'Room Id must be provided.'})
+        }
         let room = await db.room.findUnique({
             where: {
                 id: req.params.id
