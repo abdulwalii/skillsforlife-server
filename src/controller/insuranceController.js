@@ -67,7 +67,13 @@ export const buyInsurance = async (req, res) => {
         });
         
         // update the money in the banck in roomInitialInformation
-        const updatedRoomInfo = await updateRoomInitialInfoMoney(req.body.playerId, req.body.roomId, newMoney)
+        await updateRoomInitialInfoMoney(req.body.playerId, req.body.roomId, newMoney);
+        const updatedRoomInfo = await db.roomInitialInformation.findFirst({
+            where: {
+                playerId: req.body.playerId,
+                roomId: req.body.roomId
+            }
+        });
 
         res.status(200).send({updatedRoomInitialInfo: updatedRoomInfo, newInsuranceInformation: newInsuranceInformation})
     } catch (error) {
