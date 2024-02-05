@@ -29,6 +29,7 @@ route.post('/api/station/add-choice', stationController.addChoiceToStation)
 route.post('/api/station/add-internal-choice', stationController.addInternalChoiceToStation)
 
 route.post('/api/room/create', roomController.createRoom)
+route.get('/api/room/:id', roomController.fetchRoom)
 
 route.get('/api/insurance/fetchAll', insuranceController.fetchAll)
 route.post('/api/insurance/buyInsurance', insuranceController.buyInsurance)

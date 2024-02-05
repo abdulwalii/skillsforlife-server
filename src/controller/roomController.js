@@ -19,6 +19,21 @@ export const createRoom = async (req, res) => {
     }
 }
 
+export const fetchRoom = async (req, res) => {
+    try {
+        let room = await db.room.findUnique({
+            where: {
+                id: req.params.id
+            }
+        })
+        res.status(200).send({room: room})
+
+    } catch (error) {
+        res.status(400).send({message: error.message }); 
+        
+    }
+}
+
 // export const createRoom = async (roomName, roomId) => {
 //     try {
 //         const newRoom = await db.room.create({
