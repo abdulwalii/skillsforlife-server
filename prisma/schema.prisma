@@ -103,6 +103,7 @@ model Job {
 model Room {
   id String @id
   name String
+  isActive Boolean @default(true)
 
   roomInitialInformation RoomInitialInformation[] // one to many
   roomStationInformation RoomStationInformation[] // one to many

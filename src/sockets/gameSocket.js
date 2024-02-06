@@ -42,6 +42,7 @@ export const gameSocket = (io) => {
                 let welcomeObj = {
                     message: `Hi ${user.userName}, Welcome to ${room.name}`,
                     roomId: room.id,
+                    roomName: room.name
                 };
 
                 io.to(room.name).emit("welcomeAdminRoom", welcomeObj);
@@ -60,6 +61,18 @@ export const gameSocket = (io) => {
             io.to(room.name).emit('gameStart', true);
         })
 
+        socket.on('endSession', async (data) => {
+            const clientsInRoom = io.sockets.adapter.rooms.get(data.roomName);
+            socket.emit('sessionEnded', true);      
+            if (clientsInRoom) {
+                // Iterate over each socket and remove them from the room
+                clientsInRoom.forEach(clientId => {
+                    io.sockets.sockets.get(clientId).leave(data.roomName);
+                });
+            }
+            console.log('clientsInRoom: ', clientsInRoom);
+        })
+        
 
         // disconnet socket
 
