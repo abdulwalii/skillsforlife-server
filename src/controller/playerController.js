@@ -20,6 +20,10 @@ export const createOne = async (req, res) => {
                 parentPhoneNumber: req.body.parentPhoneNumber,
                 school: req.body.school,
                 classCode: req.body.classCode ? req.body.classCode : null
+            },
+            include: {
+                roomInitialInfo: true,
+                roomInsuranceInfo: true
             }
         });
 
