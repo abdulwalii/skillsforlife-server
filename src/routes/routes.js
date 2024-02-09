@@ -20,6 +20,7 @@ route.get('/api/admin/verify', mdv.verifyToken, authController.verify)
 route.post('/api/player/create', playerController.createOne)
 route.get('/api/player/fetchAll', playerController.fetchAll)
 route.get('/api/player/fetchOne/:id', playerController.fetchOne)
+route.get('/api/player/room-information/:playerId/:roomId', playerController.playerInformation)
 
 route.get('/api/job/fetchAll', jobController.fetchAll)
 
@@ -30,6 +31,8 @@ route.post('/api/station/add-internal-choice', stationController.addInternalChoi
 
 route.post('/api/room/create', roomController.createRoom)
 route.get('/api/room/find/:id?', roomController.fetchRoom)
+
+route.get('/api/room-information/:roomId?', roomController.fetchRoomInformation)
 
 route.get('/api/insurance/fetchAll', insuranceController.fetchAll)
 route.post('/api/insurance/buyInsurance', insuranceController.buyInsurance)

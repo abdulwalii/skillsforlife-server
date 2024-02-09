@@ -42,7 +42,8 @@ export const gameSocket = (io) => {
                 let welcomeObj = {
                     message: `Hi ${user.userName}, Welcome to ${room.name}`,
                     roomId: room.id,
-                    roomName: room.name
+                    roomName: room.name,
+                    room: room
                 };
 
                 io.to(room.name).emit("welcomeAdminRoom", welcomeObj);
@@ -63,7 +64,6 @@ export const gameSocket = (io) => {
 
         socket.on('endSession', async (data) => {
             const clientsInRoom = io.sockets.adapter.rooms.get(data.roomName);
-            socket.emit('sessionEnded', true);      
             if (clientsInRoom) {
                 // Iterate over each socket and remove them from the room
                 clientsInRoom.forEach(clientId => {

@@ -122,3 +122,34 @@ export const playerJoinedRoom = async (data) => {
         return error.message
     }
 }
+
+export const fetchRoomInformation = async (req, res) => {
+    try {
+        if(req.params.roomId == undefined){
+            return res.status(400).send({message: 'Room Id must be provided.'})
+        }
+
+        let roomInitialInfo = await db.roomInitialInformation.findMany({
+            where: {
+                roomId: req.params.roomId
+            },
+            include: {
+                job: true,
+                room: true,
+                player: true
+            }
+        });
+
+        let roomInfo = await db.room.findUnique({
+            where:{
+                id: req.params.roomId
+            }
+        });
+
+        res.status(200).send({roomInitialInfo: roomInitialInfo, roomInfo: roomInfo});
+
+    } catch (error) {
+        res.status(400).send({message: error.message }); 
+        
+    }
+}

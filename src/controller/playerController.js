@@ -53,3 +53,37 @@ export const fetchOne = async (req, res) => {
         res.status(400).send({ message: error.message });    
     }
 }
+
+export const playerInformation = async (req, res) => {
+    try {
+        let playerInformation = await db.Player.findUnique({
+            where: {
+                id: req.params.playerId
+            },
+            include: {
+                roomInitialInfo: {
+                    where: {
+                        playerId: req.params.playerId,
+                        roomId: req.params.roomId
+                    },
+                    include: {
+                        job: true
+                    }
+                },
+                myScore: true,
+                roomInsuranceInfo: {
+                    where: {
+                        playerId: req.params.playerId,
+                        roomId: req.params.roomId
+                    }
+                }
+            }
+        });
+
+
+        res.status(200).send({player: playerInformation}); 
+
+    } catch (error) {
+        res.status(400).send({ message: error.message });        
+    }
+}
