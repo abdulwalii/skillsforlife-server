@@ -31,8 +31,8 @@ export const createOne = async (req, res) => {
 
 export const fetchAll = async (req, res) => {
     try {
-        const users = await db.player.findMany();
-        res.status(200).send({users: users}); 
+        const players = await db.player.findMany();
+        res.status(200).send({players: players}); 
     } catch (error) {
         res.status(400).send({ message: error.message });    
     }

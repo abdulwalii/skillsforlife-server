@@ -26,11 +26,12 @@ export const fetchRoom = async (req, res) => {
         }
         let room = await db.room.findUnique({
             where: {
-                id: req.params.id
+                id: req.params.id,
+                isActive: true
             }
         })
         if(room == null){
-            return res.status(400).send({room: room})
+            return res.status(400).send({room: room, message: "Session Id Expired."})
         }
         res.status(200).send({room: room})
 
@@ -59,6 +60,7 @@ export const findRoom = async (roomId) => {
         const room = await db.room.findUnique({
             where: {
                 id: roomId
+                // isActive: true
             }
         });
         return room
@@ -66,7 +68,18 @@ export const findRoom = async (roomId) => {
         return error.message
     }
 }
-
+export const expireRoom = async (roomId) => {
+    try {
+        await db.room.update({
+            data: {
+                isActive: false
+            }
+        })
+        return true
+    } catch (error) {
+        return error.message
+    }
+}
 export const playerJoinedRoom = async (data) => {
     try {
 

@@ -2,6 +2,7 @@ import { generateRandomId, generateString } from "../genericFunctions.js";
 import {
     createRoom,
     findRoom,
+    expireRoom,
     playerJoinedRoom,
 } from "../controller/roomController.js";
 
@@ -62,16 +63,22 @@ export const gameSocket = (io) => {
             io.to(room.name).emit('gameStart', true);
         })
 
-        socket.on('endSession', async (data) => {
-            const clientsInRoom = io.sockets.adapter.rooms.get(data.roomName);
-            if (clientsInRoom) {
-                // Iterate over each socket and remove them from the room
-                clientsInRoom.forEach(clientId => {
-                    io.sockets.sockets.get(clientId).leave(data.roomName);
-                });
-            }
-            console.log('clientsInRoom: ', clientsInRoom);
+        socket.on('endSession', async(data) => {
+            let room = await findRoom(data.roomId);
+            await expireRoom(data.roomId);
+            io.to(room.name).emit('gameOver', true);
         })
+
+        // socket.on('endSession', async (data) => {
+        //     const clientsInRoom = io.sockets.adapter.rooms.get(data.roomName);
+        //     if (clientsInRoom) {
+        //         // Iterate over each socket and remove them from the room
+        //         clientsInRoom.forEach(clientId => {
+        //             io.sockets.sockets.get(clientId).leave(data.roomName);
+        //         });
+        //     }
+        //     console.log('clientsInRoom: ', clientsInRoom);
+        // })
         
 
         // disconnet socket
