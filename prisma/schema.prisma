@@ -135,9 +135,15 @@ model RoomStationInformation {
   playerId String
   roomId String
   stationId String
-  moneyInTheBank Float
+  choiceId String
+  internalChoiceId String?
+  currentAmount Float
   purchaseAmount Float
-  netMoneyInTheBank Float
+  taxCredit Float?
+  growth Float?
+  netAmount Float
+  refunded Boolean @default(false)
+  netAmountAfterRefunded Float?
 
   room Room @relation(fields: [roomId], references: [id])
 

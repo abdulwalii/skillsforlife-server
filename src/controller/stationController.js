@@ -1,4 +1,4 @@
-import { generateRandomId } from "../genericFunctions.js";
+import { generateRandomId, updateRoomInitialInfoMoney } from "../genericFunctions.js";
 import { PrismaClient } from "@prisma/client";
 
 const db = new PrismaClient();
@@ -26,7 +26,7 @@ export const updateOne = async (req, res) => {
         });
         if (isCodeUsed != null) {
             return res.status(400).send({ message: `Code Already Assigned To ${isCodeUsed.name}` })
-        }        
+        }
         let station = await db.station.update({
             where: {
                 id: req.body.id
@@ -74,7 +74,7 @@ export const addChoiceToStation = async (req, res) => {
         });
         res.status(200).send({ choice: newChoice, message: "Choice Added Successfully." });
 
-    } catch (error) {        
+    } catch (error) {
         res.status(400).send({ message: error.message });
     }
 }
@@ -92,7 +92,163 @@ export const addInternalChoiceToStation = async (req, res) => {
         });
         res.status(200).send({ internalChoice: newInternalChoice, message: "Internal Choice Added Successfully." });
 
-    } catch (error) {        
+    } catch (error) {
         res.status(400).send({ message: error.message });
     }
+}
+
+export const buyFromStation = async (req, res) => {
+    try {
+
+        const { playerId, roomId, stationId, choiceId, internalChoiceId } = req.body
+
+        let internalChoice = {};
+        let choice = {};
+        let currentAmount = null;
+        let purchaseAmount = null;
+        let netAmount = null;
+        let message = null;
+
+        let refund = await refundPurchasesIfAny(req.body); // check if previous purchases exist, if exist it will be refunded.
+
+        if ('successfull' in refund && refund.successfull) {
+
+            return res.status(200).send({ message: refund.message });
+        }
+
+        let roomInitial = await db.roomInitialInformation.findFirst({
+            where: {
+                playerId: playerId,
+                roomId: roomId
+            },
+        });
+
+        currentAmount = roomInitial.moneyInTheBank;
+
+        choice = await db.choices.findUnique({
+            where: {
+                id: choiceId
+            }
+        })
+
+        if (internalChoiceId != null) {
+            internalChoice = await db.internalChoices.findUnique({
+                where: {
+                    id: internalChoiceId
+                }
+            });
+
+            purchaseAmount = internalChoice.price;
+            message = `${internalChoice.name} purchased successfully.`
+
+        } else {
+
+            purchaseAmount = choice.price;
+            message = `${choice.name} purchased successfully.`
+        }
+
+        if (currentAmount < purchaseAmount) {
+
+            return res.status(406).send({ message: 'You have insufficient funds to purchase.' })
+        }
+
+        choice.taxCredit == 0 ? netAmount = currentAmount - purchaseAmount : netAmount = (currentAmount - purchaseAmount) + choice.taxCredit;
+
+        let newPurchase = await db.roomStationInformation.create({
+            data: {
+                id: generateRandomId('roomStation_'),
+                playerId: playerId,
+                roomId: roomId,
+                stationId: stationId,
+                choiceId: choiceId,
+                internalChoiceId: internalChoiceId,
+                currentAmount: currentAmount.toFixed(2),
+                purchaseAmount: purchaseAmount.toFixed(2),
+                taxCredit: choice['taxCredit'],
+                growth: choice['growthInPct'],
+                netAmount: netAmount.toFixed(2)
+
+            }
+        })
+
+        let updatedRoomInfo = await updateRoomInitialInfoMoney(playerId, roomId, netAmount);
+
+        res.status(200).send({ newPurchase: newPurchase, updatedRoomInfo: updatedRoomInfo, message: message });
+
+    } catch (error) {
+        res.status(400).send({ message: error.message });
+    }
+}
+
+export const refundPurchasesIfAny = async (body) => {
+
+    try {
+        const { playerId, roomId, stationId, choiceId, internalChoiceId } = body;
+
+        let newNetAmount = null;
+        let internalChoice = {};
+        let choice = {};
+        let message = null;
+
+        let Obj = {
+            playerId: playerId,
+            roomId: roomId,
+            stationId: stationId,
+            choiceId: choiceId,
+            refunded: false
+        };
+
+        internalChoiceId != null ? whereObj['internalChoiceId'] = internalChoiceId : null;
+
+        let roomStationInfoExist = await db.roomStationInformation.findFirst({
+            where: Obj
+        })
+
+        if (roomStationInfoExist != null) {
+
+            const { id, purchaseAmount, netAmount, taxCredit } = roomStationInfoExist;
+
+            newNetAmount = (netAmount + purchaseAmount) - taxCredit;
+
+            if (internalChoiceId != null) {
+
+                internalChoice = await db.internalChoices.findUnique({
+                    where: {
+                        id: internalChoiceId
+                    }
+                });
+
+                message = `${internalChoice.name} refunded successfully.`;
+            }
+            else {
+
+                choice = await db.choices.findUnique({
+                    where: {
+                        id: choiceId
+                    }
+                });
+
+                message = `${choice.name} refunded successfully.`;
+            }
+
+            await db.roomStationInformation.update({
+                where: {
+                    id: id
+                },
+                data: {
+                    refunded: true,
+                    netAmountAfterRefunded: newNetAmount
+                }
+            });
+
+            await updateRoomInitialInfoMoney(playerId, roomId, newNetAmount);
+
+            return { successfull: true, message: message };
+        }
+        return { successfull: false };
+
+    } catch (error) {
+        return error.message
+    }
+
 }

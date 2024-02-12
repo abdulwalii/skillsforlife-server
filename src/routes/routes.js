@@ -37,6 +37,9 @@ route.get('/api/room-information/:roomId?', roomController.fetchRoomInformation)
 route.get('/api/insurance/fetchAll', insuranceController.fetchAll)
 route.post('/api/insurance/buyInsurance', insuranceController.buyInsurance)
 
+route.post('/api/station/buy', stationController.buyFromStation)
+
+
 // route.post('/api/insurance/create', file.uploadInsuranceImage.single('image'),insuranceController.createInsurance)
 
 
