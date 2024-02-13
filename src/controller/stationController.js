@@ -259,3 +259,20 @@ export const refundPurchasesIfAny = async (body) => {
     }
 
 }
+
+export const previousPurchases = async (req, res) => {
+    try {
+        let purchases = await db.roomStationInformation.findMany({
+            where: {
+                playerId: req.params.playerId,
+                roomId: req.params.roomId,
+                stationId: req.params.stationId,
+                refunded: false
+            }
+        });
+
+        res.status(200).send({puchases: purchases})
+    } catch (error) {
+        res.status(400).send({ message: error.message });        
+    }
+}
