@@ -162,16 +162,16 @@ export const buyFromStation = async (req, res) => {
                 stationId: stationId,
                 choiceId: choiceId,
                 internalChoiceId: internalChoiceId,
-                currentAmount: currentAmount.toFixed(2),
-                purchaseAmount: purchaseAmount.toFixed(2),
+                currentAmount: parseFloat(currentAmount.toFixed(2)),
+                purchaseAmount: parseFloat(purchaseAmount.toFixed(2)),
                 taxCredit: choice['taxCredit'],
                 growth: choice['growthInPct'],
-                netAmount: netAmount.toFixed(2)
+                netAmount: parseFloat(netAmount.toFixed(2))
 
             }
         })
 
-        let updatedRoomInfo = await updateRoomInitialInfoMoney(playerId, roomId, netAmount);
+        let updatedRoomInfo = await updateRoomInitialInfoMoney(playerId, roomId, parseFloat(netAmount.toFixed(2)));
 
         res.status(200).send({ newPurchase: newPurchase, updatedRoomInfo: updatedRoomInfo, message: message });
 
@@ -198,7 +198,7 @@ export const refundPurchasesIfAny = async (body) => {
             refunded: false
         };
 
-        internalChoiceId != null ? whereObj['internalChoiceId'] = internalChoiceId : null;
+        internalChoiceId != null ? Obj['internalChoiceId'] = internalChoiceId : null;
 
         let roomStationInfoExist = await db.roomStationInformation.findFirst({
             where: Obj
@@ -206,9 +206,16 @@ export const refundPurchasesIfAny = async (body) => {
 
         if (roomStationInfoExist != null) {
 
-            const { id, purchaseAmount, netAmount, taxCredit } = roomStationInfoExist;
+            const { id, purchaseAmount, taxCredit } = roomStationInfoExist;
 
-            newNetAmount = (netAmount + purchaseAmount) - taxCredit;
+            let roomInitial = await db.roomInitialInformation.findFirst({
+                where: {
+                    playerId: playerId,
+                    roomId: roomId
+                },
+            });
+
+            newNetAmount = (roomInitial.moneyInTheBank + purchaseAmount) - taxCredit;
 
             if (internalChoiceId != null) {
 
@@ -237,11 +244,11 @@ export const refundPurchasesIfAny = async (body) => {
                 },
                 data: {
                     refunded: true,
-                    netAmountAfterRefunded: newNetAmount
+                    netAmountAfterRefunded: parseFloat(newNetAmount.toFixed(2))
                 }
             });
 
-            await updateRoomInitialInfoMoney(playerId, roomId, newNetAmount);
+            await updateRoomInitialInfoMoney(playerId, roomId, parseFloat(newNetAmount.toFixed(2)));
 
             return { successfull: true, message: message };
         }
