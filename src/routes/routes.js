@@ -17,6 +17,9 @@ route.get('/api', (req ,res) => {
 route.post('/api/admin/login', authController.login)
 route.get('/api/admin/verify', mdv.verifyToken, authController.verify)
 
+route.post('/api/admin/update',file.uploadProfileImage.single('image'), mdv.verifyToken, authController.updateProfile)
+route.post('/api/admin/change-password', mdv.verifyToken, authController.changePassword)
+
 route.post('/api/player/create', playerController.createOne)
 route.get('/api/player/fetchAll', playerController.fetchAll)
 route.get('/api/player/fetchOne/:id', playerController.fetchOne)

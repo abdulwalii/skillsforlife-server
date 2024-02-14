@@ -1,5 +1,6 @@
-import { generateRandomId, validateHash } from "../genericFunctions.js";
+import { generateRandomId, validateHash, generateHash } from "../genericFunctions.js";
 import { PrismaClient } from "@prisma/client";
+import fs from 'node:fs';
 
 const db = new PrismaClient();
 
@@ -59,5 +60,68 @@ export const getUser = async (id) => {
         return user
     } catch (error) {
         return error.message
+    }
+}
+
+export const updateProfile = async (req, res) => {
+    try {
+        
+        let unlinkMessage = null;
+        let obj = {userName: req.body.name};
+        
+        if(req.file != undefined){
+
+            obj['profileImage'] = req.file;
+
+            if(req.body.user.profileImage != null){
+
+                fs.unlink(req.body.user.profileImage.path, (err) => {
+                    if(err){
+                        unlinkMessage = err;
+                    }
+                });
+
+            }
+
+        }
+                
+        let updatedUser = await db.user.update({
+            where: {
+                id: req.body.user.id
+            },
+            data: obj
+        });
+        
+        res.status(200).send({user: updatedUser, unlinkMessage: unlinkMessage })
+
+    } catch (error) {
+        res.status(400).send({message: error.message});        
+    }
+}
+
+
+export const changePassword = async (req, res) => {
+    try {
+        let {currentPassword, newPassword} = req.body;
+
+        let check = await validateHash(currentPassword, req.body.user.password);
+
+        if(!check){
+            return res.status(400).send({message: `Incorrect Password.`})
+        }
+
+        await db.user.update({
+            where:{
+                id: req.body.user.id
+            },
+            data: {
+                password: await generateHash(newPassword)
+            }
+        })
+
+        res.status(200).send({message: `Password Updated Successfully.`});
+
+    } catch (error) {
+        res.status(400).send({message: error.message});        
     }
 }

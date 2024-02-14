@@ -22,6 +22,17 @@ let insuranceStorage = multer.diskStorage({
   },
 });
 
+// storage destination for profile photos
+let profileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./assets");
+  },
+  filename: (req, file, cb) => {
+    const extension = file.mimetype.split("/");
+    cb(null, `${new Date().getTime()}.${extension[1]}`);
+  },
+});
+
 // function to upload station photos
 export const uploadStationImage = multer({
   storage: stationStorage,
@@ -34,6 +45,15 @@ export const uploadStationImage = multer({
 // function to upload insurance photos
 export const uploadInsuranceImage = multer({
   storage: insuranceStorage,
+  fileFilter: (req, file, cb) => {
+    if (!file) cb(null, false);
+    else cb(null, true);
+  },
+});
+
+// function to upload profile photo
+export const uploadProfileImage = multer({
+  storage: profileStorage,
   fileFilter: (req, file, cb) => {
     if (!file) cb(null, false);
     else cb(null, true);
