@@ -43,16 +43,45 @@ export const updateOne = async (req, res) => {
 
 export const fetchAll = async (req, res) => {
     try {
-        let stations = await db.station.findMany({
+
+        let {playerId, roomId} = req.params;
+        let purchasedStations = [];
+        let purchasedStationIds = [];
+        let stations = [];
+
+
+        stations = await db.station.findMany({
             include: {
                 choices: {
                     include: {
                         internalChoices: true
                     }
                 }
-            }
+            },
         });
-        res.status(200).send({ stations: stations })
+
+        if(playerId != null && roomId != null){
+
+            purchasedStations = await db.roomStationInformation.findMany({
+                where: {
+                    playerId: playerId,
+                    roomId: roomId,
+                    refunded: false
+                },
+                select: {
+                    stationId: true
+                }
+            });
+
+            purchasedStations.forEach((station) => purchasedStationIds.push(station.stationId));
+
+            stations.forEach((station) => {
+                purchasedStationIds.includes(station.id) ? station['purchased'] = true : station['purchased'] = false
+            })
+        
+        }
+
+        res.status(200).send({stations: stations});
     } catch (error) {
         res.status(400).send({ message: error.message })
     }

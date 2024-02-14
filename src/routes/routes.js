@@ -27,7 +27,7 @@ route.get('/api/player/room-information/:playerId/:roomId', playerController.pla
 
 route.get('/api/job/fetchAll', jobController.fetchAll)
 
-route.get('/api/station/fetchAll', stationController.fetchAll)
+route.get('/api/station/fetchAll/:playerId?/:roomId?', stationController.fetchAll)
 route.post('/api/station/update', stationController.updateOne)
 route.post('/api/station/add-choice', stationController.addChoiceToStation)
 route.post('/api/station/add-internal-choice', stationController.addInternalChoiceToStation)
@@ -42,7 +42,6 @@ route.post('/api/insurance/buyInsurance', insuranceController.buyInsurance)
 
 route.post('/api/station/buy', stationController.buyFromStation)
 route.get('/api/station/previous-purchases/:playerId/:roomId/:stationId', stationController.previousPurchases)
-
 
 // route.post('/api/insurance/create', file.uploadInsuranceImage.single('image'),insuranceController.createInsurance)
 

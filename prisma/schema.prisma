@@ -39,6 +39,7 @@ model Player {
   myScore Score[] // one to many with score
   roomInitialInfo RoomInitialInformation[] // one to many with RoomInitialInformation
   roomInsuranceInfo RoomInsuranceInformation[]
+  roomStationInfo RoomStationInformation[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -147,6 +148,7 @@ model RoomStationInformation {
   netAmountAfterRefunded Float?
 
   room Room @relation(fields: [roomId], references: [id])
+  player Player @relation(fields: [playerId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
