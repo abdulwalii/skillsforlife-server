@@ -4,6 +4,7 @@ import {
     findRoom,
     expireRoom,
     playerJoinedRoom,
+    calculateScore,
 } from "../controller/roomController.js";
 
 import { getUser } from "../controller/authController.js";
@@ -66,6 +67,7 @@ export const gameSocket = (io) => {
         socket.on('endSession', async(data) => {
             let room = await findRoom(data.roomId);
             await expireRoom(data.roomId);
+            await calculateScore(data.roomId)
             io.to(room.name).emit('gameOver', true);
         })
 

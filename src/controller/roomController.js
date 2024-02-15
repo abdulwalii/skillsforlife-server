@@ -166,3 +166,98 @@ export const fetchRoomInformation = async (req, res) => {
         
     }
 }
+
+export const calculateScore = async (roomId) => {
+
+    try {
+        // const {roomId} = req.body;
+        let playerIds = [];
+        let score = null;
+
+        // find all players in the room
+        let playersInfo = await db.roomInitialInformation.findMany({
+            where:{
+                roomId: roomId
+            },
+            select: {
+                id: true,
+                playerId: true,
+                moneyInTheBank: true
+            }
+        })
+
+        // push playerids in an array
+        playersInfo.forEach((player) => playerIds.push(player.playerId));
+
+        // find player's purchases excluded refunds
+        let roomStationInfo = await db.roomStationInformation.findMany({
+            where: {
+                playerId: {in: playerIds},
+                roomId: roomId,
+                refunded: false,
+            },
+        })
+
+        // iterate playersinfo
+        playersInfo.forEach(async (player) => {
+
+            // filter player's purchases from all purchases in a room
+            let info = roomStationInfo.filter((data) => data.playerId == player.playerId);
+            score = player.moneyInTheBank;
+            
+            info.forEach((data) => { // iterate those purchases
+
+                if(data.growth > 0){ // check if player buys investment account
+
+                    score = player.moneyInTheBank * 1.1; // add 10% of their remaining money in their money.
+                    return;
+
+                }
+            })            
+            
+            // await db.roomInitialInformation.update({
+            //     where:{
+            //         id: player.id
+            //     },
+            //     data: {
+            //         moneyInTheBank: score
+            //     }
+            // })
+
+            await db.score.create({
+                data: {
+                    id: generateRandomId('score_'),
+                    roomId: roomId,
+                    playerId: player.playerId,
+                    score: score
+                }
+            })
+
+            score = null;
+
+        })        
+
+        res.status(200).send({message: `Scores Calculated Successfully.`});
+
+    } catch (error) {
+        res.status(400).send({message: error.message });
+    }
+}
+
+export const getScore = async (req, res) => {
+    try {
+        const {playerId, roomId} = req.body;
+
+        let score = await db.score.findFirst({
+            where: {
+                playerId: playerId,
+                roomId:roomId
+            }
+        })
+
+        res.status(200).send({score: score});
+
+    } catch (error) {
+        res.status(400).send({message: error.message });        
+    }
+}

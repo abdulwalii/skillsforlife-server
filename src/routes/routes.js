@@ -36,12 +36,15 @@ route.post('/api/room/create', roomController.createRoom)
 route.get('/api/room/find/:id?', roomController.fetchRoom)
 
 route.get('/api/room-information/:roomId?', roomController.fetchRoomInformation)
+route.post('/api/room/score', roomController.getScore)
 
 route.get('/api/insurance/fetchAll', insuranceController.fetchAll)
 route.post('/api/insurance/buyInsurance', insuranceController.buyInsurance)
 
 route.post('/api/station/buy', stationController.buyFromStation)
 route.get('/api/station/previous-purchases/:playerId/:roomId/:stationId', stationController.previousPurchases)
+
+route.post('/api/station/calculate', roomController.calculateScore)
 
 // route.post('/api/insurance/create', file.uploadInsuranceImage.single('image'),insuranceController.createInsurance)
 
