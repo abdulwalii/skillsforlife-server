@@ -237,10 +237,10 @@ export const calculateScore = async (roomId) => {
 
         })        
 
-        res.status(200).send({message: `Scores Calculated Successfully.`});
+        return `Scores Calculated Successfully.`
 
     } catch (error) {
-        res.status(400).send({message: error.message });
+        return error.message
     }
 }
 
