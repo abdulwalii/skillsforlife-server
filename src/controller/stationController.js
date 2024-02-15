@@ -292,11 +292,9 @@ export const refundPurchasesIfAny = async (body) => {
 export const previousPurchases = async (req, res) => {
     try {
         let purchases = [];
-        let final = {
-            stations: [],
-            choices: [],
-            internalChoices: []
-        };
+        let stations = [];
+        let choices = [];
+        let internalChoices = []
         
         purchases = await db.roomStationInformation.findMany({
             where: {
@@ -313,16 +311,16 @@ export const previousPurchases = async (req, res) => {
         });
 
         purchases.forEach((purchase) => {
-            final.stations.push(purchase.stationId);
-            final.choices.push(purchase.choiceId);
-            final.internalChoices.push(purchase.internalChoiceId);
+            stations.push(purchase.stationId);
+            choices.push(purchase.choiceId);
+            internalChoices.push(purchase.internalChoiceId);
         })
 
-        final.stations = [...new Set(final.stations)]
-        final.choices = [...new Set(final.choices)]
-        final.internalChoices = [...new Set(final.internalChoices)]
+        stations = [...new Set(stations)]
+        choices = [...new Set(choices)]
+        internalChoices = [...new Set(internalChoices)]
 
-        res.status(200).send({puchases: final})
+        res.status(200).send({stations: stations, choices: choices, internalChoices: internalChoices})
     } catch (error) {
         res.status(400).send({ message: error.message });        
     }
