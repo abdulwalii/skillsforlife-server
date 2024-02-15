@@ -70,12 +70,15 @@ export const findRoom = async (roomId) => {
 }
 export const expireRoom = async (roomId) => {
     try {
-        await db.room.update({
+        let roomUpdated = await db.room.update({
+            where: {
+                id: roomId
+            },
             data: {
                 isActive: false
             }
         })
-        return true
+        return roomUpdated
     } catch (error) {
         return error.message
     }
@@ -244,7 +247,7 @@ export const calculateScore = async (roomId) => {
     }
 }
 
-export const getScore = async (req, res) => {
+export const getMyScore = async (req, res) => {
     try {
         const {playerId, roomId} = req.body;
 
@@ -252,11 +255,36 @@ export const getScore = async (req, res) => {
             where: {
                 playerId: playerId,
                 roomId:roomId
+            },
+            include: {
+                room: true,
+                player: true
             }
         })
 
         res.status(200).send({score: score});
 
+    } catch (error) {
+        res.status(400).send({message: error.message });        
+    }
+}
+
+export const roomScore = async (req, res) => {
+    try {
+
+        const {roomId} = req.body;
+
+        let roomScore = await db.score.findMany({
+            where: {
+                roomId: roomId
+            },
+            include: {
+                room: true,
+                player: true
+            }
+        });
+
+        res.status(200).send({score: roomScore});
     } catch (error) {
         res.status(400).send({message: error.message });        
     }

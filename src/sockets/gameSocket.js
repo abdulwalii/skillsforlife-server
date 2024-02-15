@@ -65,10 +65,12 @@ export const gameSocket = (io) => {
         })
 
         socket.on('endSession', async(data) => {
+            
             let room = await findRoom(data.roomId);
-            await expireRoom(data.roomId);
-            await calculateScore(data.roomId)
-            io.to(room.name).emit('gameOver', true);
+            let roomUpdated = await expireRoom(data.roomId);
+            let scoreResponse = await calculateScore(data.roomId)
+
+            io.to(room.name).emit('gameOver', {status: true, roomUpdated: roomUpdated, scoreResponse: scoreResponse});
         })
 
         // socket.on('endSession', async (data) => {
