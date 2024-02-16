@@ -38,6 +38,7 @@ route.get('/api/room/find/:id?', roomController.fetchRoom)
 route.get('/api/room-information/:roomId?', roomController.fetchRoomInformation)
 route.post('/api/room/my-score', roomController.getMyScore)
 route.post('/api/admin/room/score', mdv.verifyToken, roomController.roomScore)
+route.get('/api/admin/room', mdv.verifyToken, roomController.roomInfo)
 
 route.get('/api/insurance/fetchAll', insuranceController.fetchAll)
 route.post('/api/insurance/buyInsurance', insuranceController.buyInsurance)

@@ -286,6 +286,32 @@ export const roomScore = async (req, res) => {
 
         res.status(200).send({score: roomScore});
     } catch (error) {
+        res.status(400).send({message: error.message });
+    }
+}
+
+export const roomInfo = async (req, res) => {
+    try {
+
+        let room = await db.room.findMany({
+            include: {
+                roomInitialInformation: {
+                    include: {
+                        player: true,
+                        job: true
+                    }
+                },
+                scoreInformation: {
+                    include: {
+                        player: true
+                    }
+                }
+            }
+        }) 
+
+        res.status(200).send({room: room});
+
+    } catch (error) {
         res.status(400).send({message: error.message });        
     }
 }
