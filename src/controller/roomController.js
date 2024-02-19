@@ -293,7 +293,7 @@ export const roomScore = async (req, res) => {
 export const roomInfo = async (req, res) => {
     try {
 
-        let room = await db.room.findMany({
+        let room = await db.room.findMany({  
             include: {
                 roomInitialInformation: {
                     include: {
@@ -306,6 +306,9 @@ export const roomInfo = async (req, res) => {
                         player: true
                     }
                 }
+            },
+            orderBy: {
+                id: 'desc'
             }
         }) 
 
