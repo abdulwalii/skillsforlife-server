@@ -1,10 +1,20 @@
-import  {generateRandomId}  from "../genericFunctions.js";
+import  {generateRandomId, findNullKeys}  from "../genericFunctions.js";
 import { PrismaClient } from "@prisma/client";
 
 const db = new PrismaClient();
 
 export const createOne = async (req, res) => {
     try {
+
+        let copyBody = req.body;
+        delete copyBody.classCode;
+
+        let nullKeys = await findNullKeys(copyBody);
+
+        if(nullKeys.length > 0) {
+            return res.status(400).send({message: 'Incomplete Information', nullKeys: nullKeys})
+        }     
+
         const newPlayer = await db.player.create({
             data: {
                 id: generateRandomId("player_"),
