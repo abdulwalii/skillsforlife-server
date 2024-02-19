@@ -274,6 +274,12 @@ export const roomScore = async (req, res) => {
 
         const {roomId} = req.body;
 
+        let room = await db.room.findUnique({
+            where: {
+                id: roomId
+            }
+        });
+
         let roomScore = await db.score.findMany({
             where: {
                 roomId: roomId
@@ -284,7 +290,7 @@ export const roomScore = async (req, res) => {
             }
         });
 
-        res.status(200).send({score: roomScore});
+        res.status(200).send({score: roomScore, room: room});
     } catch (error) {
         res.status(400).send({message: error.message });
     }
