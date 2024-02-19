@@ -294,22 +294,19 @@ export const roomInfo = async (req, res) => {
     try {
 
         let room = await db.room.findMany({  
-            include: {
-                roomInitialInformation: {
-                    include: {
-                        player: true,
-                        job: true
-                    }
-                },
-                scoreInformation: {
-                    include: {
-                        player: true
-                    }
-                }
-            },
-            orderBy: {
-                id: 'desc'
-            }
+            // include: {
+            //     roomInitialInformation: {
+            //         include: {
+            //             player: true,
+            //             job: true
+            //         }
+            //     },
+            //     scoreInformation: {
+            //         include: {
+            //             player: true
+            //         }
+            //     }
+            // },
         }) 
 
         res.status(200).send({room: room});
