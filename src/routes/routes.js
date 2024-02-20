@@ -48,7 +48,7 @@ route.get('/api/station/previous-purchases/:playerId/:roomId/:stationId', statio
 
 route.post('/api/station/calculate', roomController.calculateScore)
 
-// route.post('/api/insurance/create', file.uploadInsuranceImage.single('image'),insuranceController.createInsurance)
+route.post('/api/insurance/create', file.uploadInsuranceImage.single('image'),insuranceController.createInsurance)
 
 
 export default route
