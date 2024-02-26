@@ -46,7 +46,7 @@ route.post('/api/insurance/buyInsurance', insuranceController.buyInsurance)
 route.post('/api/station/buy', stationController.buyFromStation)
 route.get('/api/station/previous-purchases/:playerId/:roomId/:stationId', stationController.previousPurchases)
 
-route.post('/api/station/calculate', roomController.calculateScore)
+// route.post('/api/station/calculate', roomController.calculateScore)
 
 route.post('/api/insurance/create', file.uploadInsuranceImage.single('image'),insuranceController.createInsurance)
 
