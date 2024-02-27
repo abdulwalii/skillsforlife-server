@@ -31,7 +31,7 @@ export const fetchRoom = async (req, res) => {
             }
         })
         if(room == null){
-            return res.status(400).send({room: room, message: "Session Id Expired."})
+            return res.status(400).send({room: room, message: "Invalid Session Id."})
         }
         res.status(200).send({room: room})
 
