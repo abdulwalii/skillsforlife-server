@@ -25,14 +25,14 @@ model Player {
   id String @id @unique
   firstName String
   lastName String
-  grade String
-  phoneNumber String
+  grade String?
+  phoneNumber String?
   email String
-  city String
-  state String
-  parentFullName String
+  city String?
+  state String?
+  parentFullName String?
   parentPhoneNumber String
-  parentEmail String
+  parentEmail String?
   classCode String?
   school String?
   

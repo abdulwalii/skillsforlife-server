@@ -14,7 +14,7 @@ export const createOne = async (req, res) => {
         // if(nullKeys.length > 0) {
         //     return res.status(400).send({message: 'Incomplete Information', nullKeys: nullKeys})
         // }     
-
+        
         const newPlayer = await db.player.create({
             data: {
                 id: generateRandomId("player_"),
