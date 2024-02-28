@@ -11,7 +11,7 @@ import { getUser } from "../controller/authController.js";
 
 export const gameSocket = (io) => {
     io.on("connection", (socket) => {
-        
+
         // create room
         socket.on("createRoom", async (arg) => {
             const roomId = generateString(8);
@@ -52,26 +52,32 @@ export const gameSocket = (io) => {
             } else {
                 let playerJoinedRoomInformation = await playerJoinedRoom(data);
 
-                io.to(room.name).to(socket.id).emit("IJoined", playerJoinedRoomInformation);                
+                io.to(room.name).to(socket.id).emit("IJoined", playerJoinedRoomInformation);
                 io.to(room.name).emit("playerJoined", playerJoinedRoomInformation);
             }
         });
 
         // start Game
 
-        socket.on('startGame', async(data) => {
+        socket.on('startGame', async (data) => {
             let room = await findRoom(data.roomId);
             io.to(room.name).emit('gameStart', true);
         })
 
-        socket.on('endSession', async(data) => {
-            
+        socket.on('endSession', async (data) => {
+
             let room = await findRoom(data.roomId);
             let roomUpdated = await expireRoom(data.roomId);
             let scoreResponse = await calculateScore(data.roomId)
 
-            io.to(room.name).emit('gameOver', {status: true, roomUpdated: roomUpdated, scoreResponse: scoreResponse});
+            io.to(room.name).emit('gameOver', { status: true, roomUpdated: roomUpdated, scoreResponse: scoreResponse });
         })
+
+        // Handle custom event to leave the room
+        socket.on('leaveRoom', (room) => {
+            socket.leave(room.roomName); // Leave the room
+            console.log('User left the room');
+        });
 
         // socket.on('endSession', async (data) => {
         //     const clientsInRoom = io.sockets.adapter.rooms.get(data.roomName);
@@ -83,12 +89,12 @@ export const gameSocket = (io) => {
         //     }
         //     console.log('clientsInRoom: ', clientsInRoom);
         // })
-        
+
 
         // disconnet socket
 
-        socket.on('disconnect', () => {
-            // console.log(`Socket ${socket.id} disconnected`);
+        socket.on('disconnect', (data) => {
+            console.log('User disconnected: ', data);
         });
     });
 };

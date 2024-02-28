@@ -1,5 +1,7 @@
 import { generateRandomId, updateRoomInitialInfoMoney } from "../genericFunctions.js";
 import { PrismaClient } from "@prisma/client";
+import e from "express";
+import fs from 'node:fs'
 
 const db = new PrismaClient();
 
@@ -321,6 +323,44 @@ export const previousPurchases = async (req, res) => {
         internalChoices = [...new Set(internalChoices)]
 
         res.status(200).send({stations: stations, choices: choices, internalChoices: internalChoices})
+    } catch (error) {
+        res.status(400).send({ message: error.message });        
+    }
+}
+
+export const updateChoice = async (req, res) => {
+    try {
+
+        let choice = await db.choices.findUnique({
+            where: {
+                id: req.body.id
+            }
+        })
+
+        let unlinkMessage = null;
+        
+        if(req.file != undefined){
+
+            if(choice.image != null){
+
+                fs.unlink(req.body.user.profileImage.path, (err) => {
+                    if(err){
+                        unlinkMessage = err;
+                    }
+                });
+
+            }
+        }
+
+        let choiceUpdate = await db.choices.update({
+            where: {
+                id: req.body.id
+            },
+            data: {
+                image: req.file
+            }
+        })
+        res.status(200).send({data: choiceUpdate})
     } catch (error) {
         res.status(400).send({ message: error.message });        
     }

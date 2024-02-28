@@ -68,6 +68,7 @@ model Choices {
   extraInfo String?
   station Station @relation(fields: [stationId], references: [id])
   stationId String
+  image Json?
 
   internalChoices InternalChoices[]
 
