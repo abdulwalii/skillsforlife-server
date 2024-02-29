@@ -25,16 +25,15 @@ model Player {
   id String @id @unique
   firstName String
   lastName String
+  phoneNumber String
+  email String?
   grade String?
-  phoneNumber String?
-  email String
-  city String?
-  state String?
-  parentFullName String?
-  parentPhoneNumber String
-  parentEmail String?
-  classCode String?
-  school String?
+  // city String?
+  // state String?
+  // parentFullName String?
+  // parentPhoneNumber String?
+  // parentEmail String?
+  // school String?
   
   myScore Score[] // one to many with score
   roomInitialInfo RoomInitialInformation[] // one to many with RoomInitialInformation

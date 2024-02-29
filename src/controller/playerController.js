@@ -18,18 +18,17 @@ export const createOne = async (req, res) => {
         const newPlayer = await db.player.create({
             data: {
                 id: generateRandomId("player_"),
-                firstName: req.body.firstName,
-                lastName: req.body.lastName,
-                email: req.body.email,
-                grade: req.body.grade,
-                phoneNumber: req.body.phoneNumber,
-                city: req.body.city,
-                state: req.body.state,
-                parentFullName: req.body.parentFullName,
-                parentEmail: req.body.parentEmail,
-                parentPhoneNumber: req.body.parentPhoneNumber,
-                school: req.body.school,
-                classCode: req.body.classCode ? req.body.classCode : null
+                firstName: req.body.firstName, // not null
+                lastName: req.body.lastName, // not null
+                email: req.body.email, // null
+                grade: req.body.grade, // null
+                phoneNumber: req.body.phoneNumber, // not null
+                // city: req.body.city,
+                // state: req.body.state,
+                // parentFullName: req.body.parentFullName,
+                // parentEmail: req.body.parentEmail,
+                // parentPhoneNumber: req.body.parentPhoneNumber,
+                // school: req.body.school,
             },
             include: {
                 roomInitialInfo: true,
