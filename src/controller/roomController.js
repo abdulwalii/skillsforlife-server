@@ -68,6 +68,23 @@ export const findRoom = async (roomId) => {
         return error.message
     }
 }
+
+export const gameStartRoom = async (roomId) => {
+    try {
+        let roomUpdated = await db.room.update({
+            where: {
+                id: roomId
+            },
+            data: {
+                gameStarted: true
+            }
+        })
+        return roomUpdated
+    } catch (error) {
+        return error.message
+    }
+}
+
 export const expireRoom = async (roomId) => {
     try {
         let roomUpdated = await db.room.update({
