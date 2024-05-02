@@ -28,7 +28,7 @@ model Player {
   phoneNumber String
   email String?
   grade String?
-  // city String?
+  city String?
   // state String?
   // parentFullName String?
   // parentPhoneNumber String?
@@ -133,6 +133,14 @@ model RoomInitialInformation {
   updatedAt DateTime @updatedAt
 }
 
+// Define enum type BankType
+enum BankType {
+  piggy
+  investment
+  saving
+}
+
+
 model RoomStationInformation {
   id String @id
   playerId String
@@ -148,6 +156,9 @@ model RoomStationInformation {
   refunded Boolean @default(false)
   netAmountAfterRefunded Float?
 
+  deposit Float?
+  bankType BankType?
+  
   room Room @relation(fields: [roomId], references: [id])
   player Player @relation(fields: [playerId], references: [id])
 

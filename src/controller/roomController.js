@@ -1,4 +1,4 @@
-import  {generateRandomId, generateString}  from "../genericFunctions.js";
+import  {generateRandomId, generateString, updateRoomInitialInfoMoney}  from "../genericFunctions.js";
 import { fetchRandomJob } from "./jobController.js";
 import { PrismaClient } from "@prisma/client";
 
@@ -336,5 +336,60 @@ export const roomInfo = async (req, res) => {
 
     } catch (error) {
         res.status(400).send({message: error.message });        
+    }
+}
+
+
+
+export const withdrawDepositAmount = async (req, res) => {
+    try {
+
+        const { playerId, roomId, roomStationInfoInfoId } = req.body
+
+        // let roomStationData = await db.roomStationInformation.findFirst({
+        //     where: {
+        //         playerId: playerId,
+        //         roomId: roomId,
+        //         deposit: {
+        //             not: null
+        //         }
+        //     }
+        // })
+
+        let roomStationData = await db.roomStationInformation.findFirst({
+            where: {
+               id: roomStationInfoInfoId
+            }
+        })
+
+        if (roomStationData && roomStationData?.deposit !== null) {
+            const roomInfoData = await db.roomInitialInformation.findFirst({
+                where: {
+                    playerId: playerId,
+                    roomId: roomId
+                }
+            });
+            const total = roomInfoData.moneyInTheBank + parseFloat(roomStationData?.deposit?.toFixed(2));
+            let updatedRoomInfo = await updateRoomInitialInfoMoney(playerId, roomId, parseFloat(total.toFixed(2)));
+            // now null depost and bankType columns
+
+            await db.roomStationInformation.update({
+                where: {
+                    id: roomStationInfoInfoId
+                },
+                data: {
+                    deposit: null,
+                    bankType: null
+                }
+            });
+
+            res.status(200).send({info: updatedRoomInfo}); 
+        }else {
+            res.status(404).send({ message: "Room data not found or deposit is null" });
+    
+        }
+    }
+    catch (error) {
+        res.status(400).send({ message: error.message });
     }
 }

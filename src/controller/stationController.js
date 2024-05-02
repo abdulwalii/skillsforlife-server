@@ -185,21 +185,42 @@ export const buyFromStation = async (req, res) => {
 
         choice.taxCredit == 0 ? netAmount = currentAmount - purchaseAmount : netAmount = (currentAmount - purchaseAmount) + choice.taxCredit;
 
-        let newPurchase = await db.roomStationInformation.create({
-            data: {
-                id: generateRandomId('roomStation_'),
-                playerId: playerId,
-                roomId: roomId,
-                stationId: stationId,
-                choiceId: choiceId,
-                internalChoiceId: internalChoiceId,
-                currentAmount: parseFloat(currentAmount.toFixed(2)),
-                purchaseAmount: parseFloat(purchaseAmount.toFixed(2)),
-                taxCredit: choice['taxCredit'],
-                growth: choice['growthInPct'],
-                netAmount: parseFloat(netAmount.toFixed(2))
+        let newPurchaseData = {
+            id: generateRandomId('roomStation_'),
+            playerId: playerId,
+            roomId: roomId,
+            stationId: stationId,
+            choiceId: choiceId,
+            internalChoiceId: internalChoiceId,
+            currentAmount: parseFloat(currentAmount.toFixed(2)),
+            purchaseAmount: parseFloat(purchaseAmount.toFixed(2)),
+            taxCredit: choice['taxCredit'],
+            growth: choice['growthInPct'],
+            netAmount: parseFloat(netAmount.toFixed(2))
+        }
 
+        if (choice.name === "Piggy Bank" || choice.name === "Saving Account" || choice.name === "Investment Account") {
+        
+            // Set the bankType based on the choice name
+            switch (choice.name) {
+                case "Piggy Bank":
+                    newPurchaseData.deposit = 300;
+                    newPurchaseData.bankType = "piggy";
+                    break;
+                case "Saving Account":
+                    newPurchaseData.deposit = 100;
+                    newPurchaseData.bankType = "saving";
+                    break;
+                case "Investment Account":
+                    newPurchaseData.deposit = 200;
+                    newPurchaseData.bankType = "investment";
+                    break;
             }
+        }
+
+
+        let newPurchase = await db.roomStationInformation.create({
+            data: newPurchaseData
         })
 
         let updatedRoomInfo = await updateRoomInitialInfoMoney(playerId, roomId, parseFloat(netAmount.toFixed(2)));
@@ -210,6 +231,8 @@ export const buyFromStation = async (req, res) => {
         res.status(400).send({ message: error.message });
     }
 }
+
+
 
 export const refundPurchasesIfAny = async (body) => {
 
