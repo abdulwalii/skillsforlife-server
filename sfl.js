@@ -33,7 +33,7 @@ let httpServer = null;
 // httpServer = createServer(app);
 
 const io = new Server(httpServer, {  
-    path : '/socket', 
+    path : '/', 
     cors: { 
         origin: '*'
     } 
