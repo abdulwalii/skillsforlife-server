@@ -32,7 +32,8 @@ if(isProduction){
 
 // httpServer = createServer(app);
 
-const io = new Server(httpServer, {   
+const io = new Server(httpServer, {  
+    path : '/socket', 
     cors: { 
         origin: '*'
     } 
