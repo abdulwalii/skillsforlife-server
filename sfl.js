@@ -32,8 +32,7 @@ let httpServer = null;
 
 // httpServer = createServer(app);
 
-const io = new Server(httpServer, {  
-    path : '/', 
+const io = new Server(httpServer, {   
     cors: { 
         origin: '*'
     } 
