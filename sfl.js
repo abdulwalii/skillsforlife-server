@@ -19,16 +19,16 @@ app.use("/", route);
 let isProduction = process.env.NODE_ENV == 'production' ? true : false;
 let httpServer = null;
 
-if(isProduction){
-    let opt = {
-        key: fs.readFileSync('privkey.pem'),
-        cert: fs.readFileSync('cert.pem')
-    }
-    httpServer = https.createServer(opt, app);
+// if(isProduction){
+//     let opt = {
+//         key: fs.readFileSync('privkey.pem'),
+//         cert: fs.readFileSync('cert.pem')
+//     }
+//     httpServer = https.createServer(opt, app);
     
-}else{
+// }else{
     httpServer = createServer(app);
-}
+// }
 
 // httpServer = createServer(app);
 
