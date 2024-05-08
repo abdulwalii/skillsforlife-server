@@ -237,7 +237,7 @@ export const calculateScore = async (roomId) => {
 
                 // my code 
                 if(data.growth > 0 && data.bankType == 'investment' && data.deposit){ // check if player buys investment account
-                    score = data.deposit * 1.1; // add 10% of their deposit money.
+                    score += data.deposit * 1.1; // add 10% of their deposit money.
                     return;
                 }
             })            
