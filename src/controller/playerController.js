@@ -90,12 +90,12 @@ export const playerInformation = async (req, res) => {
                         roomId: req.params.roomId
                     }
                 },
-                roomStationInfo : {
-                    where : {
-                        playerId: req.params.playerId,
-                        roomId: req.params.roomId
-                    }
-                }
+                // roomStationInfo : {
+                //     where : {
+                //         playerId: req.params.playerId,
+                //         roomId: req.params.roomId
+                //     }
+                // }
             }
         });
 
