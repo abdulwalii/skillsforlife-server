@@ -227,11 +227,18 @@ export const calculateScore = async (roomId) => {
             
             info.forEach((data) => { // iterate those purchases
 
-                if(data.growth > 0){ // check if player buys investment account
+                // wali code 
+                // if(data.growth > 0){ // check if player buys investment account
+                    
+                //     score = player.moneyInTheBank * 1.1; // add 10% of their remaining money in their money.
+                //     return;
 
-                    score = player.moneyInTheBank * 1.1; // add 10% of their remaining money in their money.
+                // }
+
+                // my code 
+                if(data.growth > 0 && data.bankType == 'investment' && data.deposit){ // check if player buys investment account
+                    score = data.deposit * 1.1; // add 10% of their deposit money.
                     return;
-
                 }
             })            
             

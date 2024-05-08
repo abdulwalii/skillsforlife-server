@@ -216,6 +216,8 @@ export const buyFromStation = async (req, res) => {
                     newPurchaseData.bankType = "investment";
                     break;
             }
+
+            netAmount = newPurchaseData.netAmount - newPurchaseData.deposit;
         }
 
 

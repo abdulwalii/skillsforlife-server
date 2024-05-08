@@ -94,9 +94,9 @@ export const playerInformation = async (req, res) => {
                     where : {
                         playerId: req.params.playerId,
                         roomId: req.params.roomId,
-                        deposit: {
-                            not: null
-                        }
+                        // deposit: {
+                        //     not: null
+                        // }
                     }
                 }
             }
