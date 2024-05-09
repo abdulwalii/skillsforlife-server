@@ -178,10 +178,10 @@ export const buyFromStation = async (req, res) => {
             message = `${choice.name} purchased successfully.`
         }
 
-        if (currentAmount < purchaseAmount) {
+        // if (currentAmount < purchaseAmount) {
 
-            return res.status(406).send({ message: 'You have insufficient funds to purchase.' })
-        }
+        //     return res.status(406).send({ message: 'You have insufficient funds to purchase.' })
+        // }
 
         choice.taxCredit == 0 ? netAmount = currentAmount - purchaseAmount : netAmount = (currentAmount - purchaseAmount) + choice.taxCredit;
 
