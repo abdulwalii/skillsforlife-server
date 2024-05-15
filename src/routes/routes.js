@@ -46,6 +46,8 @@ route.post('/api/insurance/buyInsurance', insuranceController.buyInsurance)
 route.post('/api/station/buy', stationController.buyFromStation)
 route.get('/api/station/previous-purchases/:playerId/:roomId/:stationId', stationController.previousPurchases)
 
+route.get('/api/station/previous-purchases-for-maintenance/:playerId/:roomId', stationController.previousPurchasesForMaintenance)
+
 route.post('/api/room-information/update-money-by-withdraw',roomController.withdrawDepositAmount)
 
 // route.post('/api/station/calculate', roomController.calculateScore)

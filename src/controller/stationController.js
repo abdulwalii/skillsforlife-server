@@ -179,11 +179,59 @@ export const buyFromStation = async (req, res) => {
         }
 
         // if (currentAmount < purchaseAmount) {
-
-        //     return res.status(406).send({ message: 'You have insufficient funds to purchase.' })
+        //     let stationData = await db.roomStationInformation.findFirst({
+        //         where: {
+        //             playerId: playerId,
+        //             roomId: roomId,
+        //             bankType: 'saving',
+        //         },
+        //     });
+        //     if(stationData?.deposit && roomInitial){
+        //         await db.roomInitialInformation.update({
+        //             where: {
+        //                id : roomInitial
+        //             },
+        //             data: {
+        //                 moneyInTheBank: roomInitial.moneyInTheBank + stationData?.deposit
+        //             }
+        //         });
+        //         currentAmount += stationData?.deposit;
+        //     }else{
+        //         return res.status(406).send({ message: 'You have insufficient funds to purchase.' })
+        //     }
         // }
 
+
+        if (currentAmount < purchaseAmount) {
+            let stationData = await db.roomStationInformation.findFirst({
+                where: {
+                    playerId: playerId,
+                    roomId: roomId,
+                    bankType: 'saving',
+                },
+            });
+        
+            if (stationData && roomInitial) { // Check if stationData and roomInitial are not null
+                const updatedMoneyInTheBank = roomInitial.moneyInTheBank + (stationData.deposit || 0); // Ensure deposit is not null
+        
+                await db.roomInitialInformation.update({
+                    where: {
+                       id: roomInitial.id // Assuming id is the primary key
+                    },
+                    data: {
+                        moneyInTheBank: updatedMoneyInTheBank
+                    }
+                });
+        
+                currentAmount = updatedMoneyInTheBank; // Update currentAmount with the updated value
+            } else {
+                return res.status(406).send({ message: 'You have insufficient funds to purchase.' });
+            }
+        }
+        
+
         choice.taxCredit == 0 ? netAmount = currentAmount - purchaseAmount : netAmount = (currentAmount - purchaseAmount) + choice.taxCredit;
+
 
         let newPurchaseData = {
             id: generateRandomId('roomStation_'),
@@ -315,6 +363,157 @@ export const refundPurchasesIfAny = async (body) => {
     }
 
 }
+
+
+// const getChoiceIds = async (names) => {
+//     const choicesDataTransportation = await db.choices.findMany({
+//         where: {
+//             name: {
+//               in: names
+//             }
+//           },
+//           select: {
+//             id: true
+//           }
+//     });
+//     return choicesDataTransportation.map(choice => choice.id);
+// }
+
+// const getStationIdByName = async (name) => {
+//     const stationData = await db.station.find({
+//         where: {
+//             name: name
+//           },
+//           select: {
+//             id: true
+//           }
+//     });
+//     return stationData;
+// }
+
+// const getUserStationChoice = async (station_id,choice_ids) => {
+//      const data = await db.roomStationInformation.findMany({
+//         where: {
+//           playerId: req.params.playerId,
+//           roomId: req.params.roomId,
+//           stationId: station_id,
+//           choiceId : {
+//             in: choice_ids
+//           },
+//           refunded: false
+//         },
+//         select: {
+//           stationId: true,
+//           choiceId: true,
+//           internalChoiceId: true
+//         }
+//       });
+//       return data;
+// }
+
+// export const previousPurchasesForMaintenance = async (req, res) => {
+//     try {
+//         let purchases = [];
+//         let stations = [];
+//         let choices = [];
+//         let internalChoices = []
+
+//         // const station_names = ['Housing','Transportation','housing','transportation'];
+//         const transportation_choice_names = ['Used Car','New Car','Dream Car','used car','new car','dream car'];
+//         const housing_choice_names = ['House','house'];
+
+//         const housing_station_id = this.getStationIdByName('Housing');
+//         const transportation_station_id = this.getStationIdByName('Transportation');
+
+//         const transportation_choice_ids = this.getChoiceIds(transportation_choice_names);
+//         const housing_choice_ids = this.getChoiceIds(housing_choice_names);
+
+
+//        this.getUserStationChoice(housing_station_id,housing_choice_ids);
+//        this.getUserStationChoice(transportation_station_id,transportation_choice_ids);
+        
+       
+
+
+//         // res.status(200).send({stations: stations, choices: choices, internalChoices: internalChoices})
+//     } catch (error) {
+//         res.status(400).send({ message: error.message });        
+//     }
+// }
+
+
+
+
+
+
+const getChoiceIds = async (names) => {
+    const choicesData = await db.choices.findMany({
+        where: {
+            name: {
+                in: names
+            }
+        },
+        select: {
+            id: true
+        }
+    });
+    return choicesData.map(choice => choice.id);
+}
+
+const getStationIdByName = async (name) => {
+    const stationData = await db.station.findFirst({
+        where: {
+            name: name
+        },
+        select: {
+            id: true
+        }
+    });
+    return stationData ? stationData.id : null;
+}
+
+const getUserStationChoice = async (playerId, roomId, stationId, choiceIds) => {
+    const data = await db.roomStationInformation.findMany({
+        where: {
+            playerId: playerId,
+            roomId: roomId,
+            stationId: stationId,
+            choiceId: {
+                in: choiceIds
+            },
+            refunded: false
+        },
+        select: {
+            stationId: true,
+            choiceId: true,
+            internalChoiceId: true
+        }
+    });
+    return data;
+}
+
+export const previousPurchasesForMaintenance = async (req, res) => {
+    try {
+        const playerId = req.params.playerId;
+        const roomId = req.params.roomId;
+
+        const housingStationId = await getStationIdByName('Housing');
+        const transportationStationId = await getStationIdByName('Transportation');
+
+        const housingChoiceIds = await getChoiceIds(['House']);
+        const transportationChoiceIds = await getChoiceIds(['Used Car', 'New Car', 'Dream Car']);
+
+        const housingData = await getUserStationChoice(playerId, roomId, housingStationId, housingChoiceIds);
+        const transportationData = await getUserStationChoice(playerId, roomId, transportationStationId, transportationChoiceIds);
+
+        res.status(200).send({ housingData, transportationData });
+    } catch (error) {
+        res.status(400).send({ message: error.message });
+    }
+}
+
+
+
 
 export const previousPurchases = async (req, res) => {
     try {
