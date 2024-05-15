@@ -506,7 +506,18 @@ export const previousPurchasesForMaintenance = async (req, res) => {
         const housingData = await getUserStationChoice(playerId, roomId, housingStationId, housingChoiceIds);
         const transportationData = await getUserStationChoice(playerId, roomId, transportationStationId, transportationChoiceIds);
 
-        res.status(200).send({ housingData, transportationData });
+
+        const obj = {'Lawn Care':false,'Car Fuel':false};
+
+        if (housingData && housingData.length > 0) {
+            obj['Lawn Care'] = true;
+        }
+
+        if (transportationData && transportationData.length > 0) {
+            obj['Car Fuel'] = true;
+        }
+
+        res.status(200).send(obj);
     } catch (error) {
         res.status(400).send({ message: error.message });
     }
