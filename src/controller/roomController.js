@@ -361,15 +361,15 @@ export const withdrawDepositAmount = async (req, res) => {
         })
 
         if (roomStationData && roomStationData?.deposit !== null) {
-            // const roomInfoData = await db.roomInitialInformation.findFirst({
-            //     where: {
-            //         playerId: playerId,
-            //         roomId: roomId
-            //     }
-            // });
-            // const total = roomInfoData.moneyInTheBank + parseFloat(roomStationData?.deposit?.toFixed(2));
-            // let updatedRoomInfo = await updateRoomInitialInfoMoney(playerId, roomId, parseFloat(total.toFixed(2)));
-            // // now null depost and bankType columns
+            const roomInfoData = await db.roomInitialInformation.findFirst({
+                where: {
+                    playerId: playerId,
+                    roomId: roomId
+                }
+            });
+            const total = roomInfoData.moneyInTheBank + parseFloat(roomStationData?.deposit?.toFixed(2));
+            let updatedRoomInfo = await updateRoomInitialInfoMoney(playerId, roomId, parseFloat(total.toFixed(2)));
+            // now null depost and bankType columns
 
             await db.roomStationInformation.update({
                 where: {
@@ -377,24 +377,25 @@ export const withdrawDepositAmount = async (req, res) => {
                 },
                 data: {
                     deposit: null,
-                    bankType: null
+                    bankType: null,
+                    refunded: true,
                 }
             });
 
-            const refundObj = { 
-                playerId : playerId, 
-                roomId: roomId, 
-                stationId : roomStationData?.stationId,
-                choiceId : roomStationData?.choiceId,
-                internalChoiceId: null 
-            };
-            let refund = await refundPurchasesIfAny(refundObj);
+            // const refundObj = { 
+            //     playerId : playerId, 
+            //     roomId: roomId, 
+            //     stationId : roomStationData?.stationId,
+            //     choiceId : roomStationData?.choiceId,
+            //     internalChoiceId: null 
+            // };
+            // let refund = await refundPurchasesIfAny(refundObj);
 
             if ('successfull' in refund && refund.successfull) {
 
                 return res.status(200).send({ message: refund.message });
             }
-            
+
             // res.status(200).send({info: updatedRoomInfo}); 
         }else {
             res.status(404).send({ message: "Room data not found or deposit is null" });
