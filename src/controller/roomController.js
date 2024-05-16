@@ -390,7 +390,12 @@ export const withdrawDepositAmount = async (req, res) => {
             };
             let refund = await refundPurchasesIfAny(refundObj);
 
-            res.status(200).send({info: updatedRoomInfo}); 
+            if ('successfull' in refund && refund.successfull) {
+
+                return res.status(200).send({ message: refund.message });
+            }
+            
+            // res.status(200).send({info: updatedRoomInfo}); 
         }else {
             res.status(404).send({ message: "Room data not found or deposit is null" });
     
