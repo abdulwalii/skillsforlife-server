@@ -1,6 +1,7 @@
 import  {generateRandomId, generateString, updateRoomInitialInfoMoney}  from "../genericFunctions.js";
 import { fetchRandomJob } from "./jobController.js";
 import { PrismaClient } from "@prisma/client";
+import { refundPurchasesIfAny } from './stationController.js'; 
 
 const db = new PrismaClient();
 
@@ -236,7 +237,7 @@ export const calculateScore = async (roomId) => {
                 // }
 
                 // my code 
-                if(data.growth > 0 && data.bankType == 'investment' && data.deposit){ // check if player buys investment account
+                if(data.growth > 0 && data.bankType == 'investment' && data.deposit && data.refunded == 0){ // check if player buys investment account
                     score += data.deposit * 0.1; // add 10% of their deposit money.
                     return;
                 }
@@ -353,16 +354,6 @@ export const withdrawDepositAmount = async (req, res) => {
 
         const { playerId, roomId, roomStationInfoInfoId } = req.body
 
-        // let roomStationData = await db.roomStationInformation.findFirst({
-        //     where: {
-        //         playerId: playerId,
-        //         roomId: roomId,
-        //         deposit: {
-        //             not: null
-        //         }
-        //     }
-        // })
-
         let roomStationData = await db.roomStationInformation.findFirst({
             where: {
                id: roomStationInfoInfoId
@@ -370,15 +361,15 @@ export const withdrawDepositAmount = async (req, res) => {
         })
 
         if (roomStationData && roomStationData?.deposit !== null) {
-            const roomInfoData = await db.roomInitialInformation.findFirst({
-                where: {
-                    playerId: playerId,
-                    roomId: roomId
-                }
-            });
-            const total = roomInfoData.moneyInTheBank + parseFloat(roomStationData?.deposit?.toFixed(2));
-            let updatedRoomInfo = await updateRoomInitialInfoMoney(playerId, roomId, parseFloat(total.toFixed(2)));
-            // now null depost and bankType columns
+            // const roomInfoData = await db.roomInitialInformation.findFirst({
+            //     where: {
+            //         playerId: playerId,
+            //         roomId: roomId
+            //     }
+            // });
+            // const total = roomInfoData.moneyInTheBank + parseFloat(roomStationData?.deposit?.toFixed(2));
+            // let updatedRoomInfo = await updateRoomInitialInfoMoney(playerId, roomId, parseFloat(total.toFixed(2)));
+            // // now null depost and bankType columns
 
             await db.roomStationInformation.update({
                 where: {
@@ -389,6 +380,15 @@ export const withdrawDepositAmount = async (req, res) => {
                     bankType: null
                 }
             });
+
+            const refundObj = { 
+                playerId : playerId, 
+                roomId: roomId, 
+                stationId : roomStationData?.stationId,
+                choiceId : roomStationData?.choiceId,
+                internalChoiceId: null 
+            };
+            let refund = await refundPurchasesIfAny(refundObj);
 
             res.status(200).send({info: updatedRoomInfo}); 
         }else {
