@@ -133,14 +133,20 @@ export const playerJoinedRoom = async (data) => {
         // data contains playerId and roomId
         let randomJob = await fetchRandomJob();
 
+        let roomData = {
+            id: generateRandomId('roomInitial_'),
+            playerId: data.playerId,
+            roomId: data.roomId,
+            jobId: randomJob.id,
+            moneyInTheBank: randomJob.netMonthlySalary
+        };
+
+        if(data.isSingle){
+            roomData.isSingle = true; // for single player mode
+        }
+
         let newRoomInitialInformation = await db.roomInitialInformation.create({
-            data: {
-                id: generateRandomId('roomInitial_'),
-                playerId: data.playerId,
-                roomId: data.roomId,
-                jobId: randomJob.id,
-                moneyInTheBank: randomJob.netMonthlySalary
-            }
+            data: roomData
         });
         let roomInitialInfo = await db.roomInitialInformation.findUnique({
             where: {
@@ -396,7 +402,7 @@ export const withdrawDepositAmount = async (req, res) => {
             //     return res.status(200).send({ message: refund.message });
             // }
 
-            res.status(200).send({info: updatedRoomInfo}); 
+            res.status(200).send({stationId: roomStationData?.stationId}); 
         }else {
             res.status(404).send({ message: "Room data not found or deposit is null" });
     

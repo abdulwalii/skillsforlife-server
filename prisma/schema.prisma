@@ -118,12 +118,15 @@ model Room {
   updatedAt DateTime @updatedAt
 }
 
+
 model RoomInitialInformation {
   id String @id
   playerId String
   jobId String
   roomId String  
   moneyInTheBank Float?
+
+  isSingle Boolean @default(false)
 
   job Job @relation(fields: [jobId], references: [id])
   room Room @relation(fields: [roomId], references: [id])
