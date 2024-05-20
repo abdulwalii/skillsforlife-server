@@ -250,6 +250,7 @@ export const buyFromStation = async (req, res) => {
 
         if (choice.name === "Piggy Bank" || choice.name === "Saving Account" || choice.name === "Investment Account") {
         
+        
             // Set the bankType based on the choice name
             switch (choice.name) {
                 case "Piggy Bank":
@@ -264,6 +265,10 @@ export const buyFromStation = async (req, res) => {
                     newPurchaseData.deposit = 200;
                     newPurchaseData.bankType = "investment";
                     break;
+            }
+    
+            if ('depositAmount' in req.body) {
+                newPurchaseData.deposit = req.body.depositAmount;
             }
 
             netAmount = newPurchaseData.netAmount - newPurchaseData.deposit;
