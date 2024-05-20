@@ -250,10 +250,13 @@ export const buyFromStation = async (req, res) => {
                 });
         
                 currentAmount = updatedMoneyInTheBank; // Update currentAmount with the updated value
-            } 
-            else {
-                return res.status(406).send({ message: 'You have insufficient funds to purchase.' });
             }
+            else if(roomInitial?.isSingle){
+                return res.status(406).send({ message: 'You have insufficient funds to purchase.' });
+            } 
+            // else {
+            //     return res.status(406).send({ message: 'You have insufficient funds to purchase.' });
+            // }
         }
         
 
