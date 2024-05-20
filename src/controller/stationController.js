@@ -50,6 +50,7 @@ export const fetchAll = async (req, res) => {
         let purchasedStations = [];
         let purchasedStationIds = [];
         let stations = [];
+        let checkBankPurchased = false;
 
 
         stations = await db.station.findMany({
@@ -80,10 +81,34 @@ export const fetchAll = async (req, res) => {
             stations.forEach((station) => {
                 purchasedStationIds.includes(station.id) ? station['purchased'] = true : station['purchased'] = false
             })
+
+            bankStation = await db.station.findFirst({
+                where: {
+                    name : "Banking"
+                },
+                select: {
+                    id: true
+                }
+            });
+
+            // check if user purchased from banking station
+            if(bankStation){
+                const checkPurchase = await db.roomStationInformation.findFirst({
+                    where: {
+                        playerId: playerId,
+                        roomId: roomId,
+                        stationId : bankStation.id
+                    }
+                });
+                if(checkPurchase){
+                    checkBankPurchased = true;
+                }
+            }
+            
         
         }
 
-        res.status(200).send({stations: stations});
+        res.status(200).send({stations: stations, checkBankPurchased : checkBankPurchased});
     } catch (error) {
         res.status(400).send({ message: error.message })
     }
@@ -225,7 +250,8 @@ export const buyFromStation = async (req, res) => {
                 });
         
                 currentAmount = updatedMoneyInTheBank; // Update currentAmount with the updated value
-            } else {
+            } 
+            else {
                 return res.status(406).send({ message: 'You have insufficient funds to purchase.' });
             }
         }
