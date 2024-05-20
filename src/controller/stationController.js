@@ -82,7 +82,7 @@ export const fetchAll = async (req, res) => {
                 purchasedStationIds.includes(station.id) ? station['purchased'] = true : station['purchased'] = false
             })
 
-            bankStation = await db.station.findFirst({
+            const bankStation = await db.station.findFirst({
                 where: {
                     name : "Banking"
                 },
