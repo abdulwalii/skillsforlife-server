@@ -233,7 +233,7 @@ export const buyFromStation = async (req, res) => {
                     playerId: playerId,
                     roomId: roomId,
                     bankType: 'saving',
-                    refunded: 0
+                    refunded: false
                 },
             });
         
