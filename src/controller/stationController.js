@@ -228,32 +228,37 @@ export const buyFromStation = async (req, res) => {
 
 
         if (currentAmount < purchaseAmount) {
-            let stationData = await db.roomStationInformation.findFirst({
-                where: {
-                    playerId: playerId,
-                    roomId: roomId,
-                    bankType: 'saving',
-                    refunded: false
-                },
-            });
-        
-            if (stationData && roomInitial) { // Check if stationData and roomInitial are not null
-                const updatedMoneyInTheBank = roomInitial.moneyInTheBank + (stationData.deposit || 0); // Ensure deposit is not null
-        
-                await db.roomInitialInformation.update({
-                    where: {
-                       id: roomInitial.id // Assuming id is the primary key
-                    },
-                    data: {
-                        moneyInTheBank: updatedMoneyInTheBank
-                    }
-                });
-        
-                currentAmount = updatedMoneyInTheBank; // Update currentAmount with the updated value
-            }
-            else if(roomInitial?.isSingle){
+            // if player is in single mode then show this error only
+            if(roomInitial && roomInitial?.isSingle){
                 return res.status(406).send({ message: 'You have insufficient funds to purchase.' });
             } 
+
+            // let stationData = await db.roomStationInformation.findFirst({
+            //     where: {
+            //         playerId: playerId,
+            //         roomId: roomId,
+            //         bankType: 'saving',
+            //         refunded: false
+            //     },
+            // });
+        
+            // if (stationData && roomInitial) { // Check if stationData and roomInitial are not null
+            //     const updatedMoneyInTheBank = roomInitial.moneyInTheBank + (stationData.deposit || 0); // Ensure deposit is not null
+        
+            //     await db.roomInitialInformation.update({
+            //         where: {
+            //            id: roomInitial.id // Assuming id is the primary key
+            //         },
+            //         data: {
+            //             moneyInTheBank: updatedMoneyInTheBank
+            //         }
+            //     });
+        
+            //     currentAmount = updatedMoneyInTheBank; // Update currentAmount with the updated value
+            // }
+            // else if(roomInitial?.isSingle){
+            //     return res.status(406).send({ message: 'You have insufficient funds to purchase.' });
+            // } 
             // else {
             //     return res.status(406).send({ message: 'You have insufficient funds to purchase.' });
             // }
@@ -535,7 +540,7 @@ export const previousPurchasesForMaintenance = async (req, res) => {
         const housingStationId = await getStationIdByName('Housing');
         const transportationStationId = await getStationIdByName('Transportation');
 
-        const housingChoiceIds = await getChoiceIds(['House']);
+        const housingChoiceIds = await getChoiceIds(['House','Mansion']);
         const transportationChoiceIds = await getChoiceIds(['Used Car', 'New Car', 'Dream Car']);
 
         const housingData = await getUserStationChoice(playerId, roomId, housingStationId, housingChoiceIds);
