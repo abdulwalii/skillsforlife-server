@@ -48,7 +48,9 @@ export const fetchAll = async (req, res) => {
 
         let {playerId, roomId} = req.params;
         let purchasedStations = [];
+        let purchasedStationsRefunded = [];
         let purchasedStationIds = [];
+        let purchasedStationIdsRefunded = [];
         let stations = [];
         let checkBankPurchased = false;
 
@@ -76,11 +78,26 @@ export const fetchAll = async (req, res) => {
                 }
             });
 
+            purchasedStationsRefunded = await db.roomStationInformation.findMany({
+                where: {
+                    playerId: playerId,
+                    roomId: roomId,
+                    refunded: true
+                },
+                select: {
+                    stationId: true
+                }
+            });
+
             purchasedStations.forEach((station) => purchasedStationIds.push(station.stationId));
+            purchasedStationsRefunded.forEach((station) => purchasedStationIdsRefunded.push(station.stationId));
 
             stations.forEach((station) => {
                 purchasedStationIds.includes(station.id) ? station['purchased'] = true : station['purchased'] = false
+                purchasedStationIdsRefunded.includes(station.id) ? station['refund'] = true : station['refund'] = false
             })
+
+            
 
             const bankStation = await db.station.findFirst({
                 where: {
