@@ -409,6 +409,156 @@ export const refundPurchasesIfAny = async (body) => {
                 }
             });
 
+
+
+             // Check if house or mansion refund from housing refund
+             if(stationId === "station_ff8e6812-4763-41bd-923a-385a18342d7e" && 
+             (
+                 choiceId === "choice_41a14d07-62d5-4840-ab91-b96a40c1d4e9" || 
+                 choiceId === "choice_41fe5e65-3fde-48dc-ab47-5677a8fc7ead"
+             ))
+             {
+                 // check if user purchase lawn care choice from maintenance station 
+                 let lawnCare = await db.roomStationInformation.findFirst({
+                     where: {
+                         playerId: playerId,
+                         roomId : roomId,
+                         stationId : "station_599c18cf-42c4-4142-a53b-3e3ea11e75ea", // maintenacne
+                         choiceId : "choice_a201c620-2214-44fb-bb07-29126508b658", // lawncare
+                         refunded : false
+                     },
+                     select : {
+                         id: true
+                     }
+                 })
+
+                 if (lawnCare != null) {
+                    const { id, purchaseAmount, taxCredit } = lawnCare;
+                    const newNetAmount1 = (roomInitial.moneyInTheBank + purchaseAmount) - taxCredit;
+
+                    // now refund lawn care after house or mansion refund
+                    await db.roomStationInformation.update({
+                        where: {
+                            id: id
+                        },
+                        data: {
+                            refunded: true,
+                            netAmountAfterRefunded: parseFloat(newNetAmount1.toFixed(2))
+                        }
+                    });
+
+                 }
+             }
+ 
+             // Check if car (used,new,dream) refund from transportation station
+             if(stationId === "station_9ed198bb-b387-4b0d-9c41-9de77e665cc1" && 
+             (
+                 choiceId === "choice_675422c4-a856-48b8-a0c9-5b68b709c616" || 
+                 choiceId === "choice_e7a8753e-6d63-415c-95cd-294a34a899f9" || 
+                 choiceId === "choice_f003e8d4-7ff2-495d-99d9-9cb5595557c2"
+             ))
+             {
+                  // check if user purchase car fuel from maintenance station 
+                  let carFuel = await db.roomStationInformation.findFirst({
+                     where: {
+                         playerId: playerId,
+                         roomId : roomId,
+                         stationId : "station_599c18cf-42c4-4142-a53b-3e3ea11e75ea", // maintenance
+                         choiceId : "choice_c7b38acd-f46c-48a1-bbee-c85b1112bc24", // car upkeep
+                         internalChoiceId : "intChoice_1a61d704-7a25-45fa-be61-b1cf55aa24f7", // car fuel
+                         refunded : false
+                     },
+                     select : {
+                         id: true
+                     }
+                 })
+ 
+                 // check if user purchase car wash from maintenance station 
+                 let carWash = await db.roomStationInformation.findFirst({
+                     where: {
+                         playerId: playerId,
+                         roomId : roomId,
+                         stationId : "station_599c18cf-42c4-4142-a53b-3e3ea11e75ea", // maintenance
+                         choiceId : "choice_c7b38acd-f46c-48a1-bbee-c85b1112bc24", // car upkeep
+                         internalChoiceId : "intChoice_300a3cd5-ab2f-4bd8-8fa9-bc2b911111a6", // car wash
+                         refunded : false
+                     },
+                     select : {
+                         id: true
+                     }
+                 })
+ 
+                 // check if user purchase car detailing from maintenance station 
+                 let carDetail = await db.roomStationInformation.findFirst({
+                     where: {
+                         playerId: playerId,
+                         roomId : roomId,
+                         stationId : "station_599c18cf-42c4-4142-a53b-3e3ea11e75ea", // maintenance
+                         choiceId : "choice_c7b38acd-f46c-48a1-bbee-c85b1112bc24", // car upkeep
+                         internalChoiceId : "intChoice_dbe8e19e-881a-4663-a43d-67efa7f8251b", // car detailing
+                         refunded : false
+                     },
+                     select : {
+                         id: true
+                     }
+                 })
+
+
+                 if (carFuel != null) {
+                    const { id, purchaseAmount, taxCredit } = carFuel;
+                    const newNetAmount2 = (roomInitial.moneyInTheBank + purchaseAmount) - taxCredit;
+
+                    // now refund lawn care after house or mansion refund
+                    await db.roomStationInformation.update({
+                        where: {
+                            id: id
+                        },
+                        data: {
+                            refunded: true,
+                            netAmountAfterRefunded: parseFloat(newNetAmount2.toFixed(2))
+                        }
+                    });
+
+                 }
+
+                 if (carWash != null) {
+                    const { id, purchaseAmount, taxCredit } = carWash;
+                    const newNetAmount3 = (roomInitial.moneyInTheBank + purchaseAmount) - taxCredit;
+
+                    // now refund lawn care after house or mansion refund
+                    await db.roomStationInformation.update({
+                        where: {
+                            id: id
+                        },
+                        data: {
+                            refunded: true,
+                            netAmountAfterRefunded: parseFloat(newNetAmount3.toFixed(2))
+                        }
+                    });
+
+                 }
+
+                 if (carDetail != null) {
+                    const { id, purchaseAmount, taxCredit } = carDetail;
+                    const newNetAmount4 = (roomInitial.moneyInTheBank + purchaseAmount) - taxCredit;
+
+                    // now refund lawn care after house or mansion refund
+                    await db.roomStationInformation.update({
+                        where: {
+                            id: id
+                        },
+                        data: {
+                            refunded: true,
+                            netAmountAfterRefunded: parseFloat(newNetAmount4.toFixed(2))
+                        }
+                    });
+
+                 }
+
+             }
+
+
+
             await updateRoomInitialInfoMoney(playerId, roomId, parseFloat(newNetAmount.toFixed(2)));
 
             return { successfull: true, message: message };
