@@ -357,7 +357,8 @@ export const updateMoney = async (req,res) => {
     try{
         const { type, money, playerId, roomId } = req.body
         if(type && money != null && playerId && roomId){
-            let amount = parseFloat(money).toFixed(2);
+            let amount = parseFloat(money);
+            amount = amount.toFixed(2);
             if(type === "consume"){
                 const roomInfoData = await db.roomInitialInformation.findFirst({
                     where: {
