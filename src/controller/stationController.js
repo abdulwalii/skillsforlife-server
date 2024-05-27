@@ -437,7 +437,7 @@ export const refundPurchasesIfAny = async (body) => {
                     const newNetAmount1 = (roomInitial.moneyInTheBank + purchaseAmount) - taxCredit;
 
                     // now refund lawn care after house or mansion refund
-                    await db.roomStationInformation.update({
+                    const res = await db.roomStationInformation.update({
                         where: {
                             id: id
                         },
@@ -446,7 +446,9 @@ export const refundPurchasesIfAny = async (body) => {
                             netAmountAfterRefunded: parseFloat(newNetAmount1.toFixed(2))
                         }
                     });
-
+                    if(res){
+                        newNetAmount += newNetAmount1;
+                    }
                  }
              }
  
@@ -509,7 +511,7 @@ export const refundPurchasesIfAny = async (body) => {
                     const newNetAmount2 = (roomInitial.moneyInTheBank + purchaseAmount) - taxCredit;
 
                     // now refund lawn care after house or mansion refund
-                    await db.roomStationInformation.update({
+                    const res = await db.roomStationInformation.update({
                         where: {
                             id: id
                         },
@@ -518,6 +520,9 @@ export const refundPurchasesIfAny = async (body) => {
                             netAmountAfterRefunded: parseFloat(newNetAmount2.toFixed(2))
                         }
                     });
+                    if(res){
+                        newNetAmount += newNetAmount2;
+                    }
 
                  }
 
@@ -526,7 +531,7 @@ export const refundPurchasesIfAny = async (body) => {
                     const newNetAmount3 = (roomInitial.moneyInTheBank + purchaseAmount) - taxCredit;
 
                     // now refund lawn care after house or mansion refund
-                    await db.roomStationInformation.update({
+                    const res = await db.roomStationInformation.update({
                         where: {
                             id: id
                         },
@@ -536,6 +541,10 @@ export const refundPurchasesIfAny = async (body) => {
                         }
                     });
 
+                    if(res){
+                        newNetAmount += newNetAmount3;
+                    }
+
                  }
 
                  if (carDetail != null) {
@@ -543,7 +552,7 @@ export const refundPurchasesIfAny = async (body) => {
                     const newNetAmount4 = (roomInitial.moneyInTheBank + purchaseAmount) - taxCredit;
 
                     // now refund lawn care after house or mansion refund
-                    await db.roomStationInformation.update({
+                    const res = await db.roomStationInformation.update({
                         where: {
                             id: id
                         },
@@ -552,6 +561,10 @@ export const refundPurchasesIfAny = async (body) => {
                             netAmountAfterRefunded: parseFloat(newNetAmount4.toFixed(2))
                         }
                     });
+
+                    if(res){
+                        newNetAmount += newNetAmount4;
+                    }
 
                  }
 

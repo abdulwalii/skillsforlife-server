@@ -50,6 +50,8 @@ route.get('/api/station/previous-purchases-for-maintenance/:playerId/:roomId', s
 
 route.post('/api/room-information/update-money-by-withdraw',roomController.withdrawDepositAmount)
 
+route.post('/api/room-information/update-money',roomController.updateMoney)
+
 // route.post('/api/station/calculate', roomController.calculateScore)
 
 route.post('/api/insurance/create', file.uploadInsuranceImage.single('image'),insuranceController.createInsurance)

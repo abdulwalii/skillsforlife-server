@@ -353,6 +353,24 @@ export const roomInfo = async (req, res) => {
     }
 }
 
+export const updateMoney = async (req,res) => {
+    try{
+        const { money, playerId, roomId } = req.body
+        if(money != null && playerId && roomId){
+            let updatedRoomInfo = await updateRoomInitialInfoMoney(playerId, roomId, parseFloat(money.toFixed(2)));
+            if (updatedRoomInfo) {
+                res.status(200).send({ message: "Money updated successfully!", updatedRoomInfo });
+            } else {
+                res.status(500).send({ message: "Failed to update money." });
+            }
+        }else{
+            res.status(404).send({ message: "Invalid data!" });
+        }
+    } catch (error) {
+        res.status(400).send({message: error.message });        
+    }
+}
+
 
 
 export const withdrawDepositAmount = async (req, res) => {
