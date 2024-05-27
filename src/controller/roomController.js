@@ -358,6 +358,7 @@ export const updateMoney = async (req,res) => {
         const { type, money, playerId, roomId } = req.body
         if(type && money != null && playerId && roomId){
             let amount = parseFloat(money).toFixed(2);
+            amount = parseFloat(amount);
             if(type === "consume"){
                 const roomInfoData = await db.roomInitialInformation.findFirst({
                     where: {
@@ -371,7 +372,7 @@ export const updateMoney = async (req,res) => {
                 if(!roomInfoData){
                     res.status(404).send({ message: "Record not found!" });  
                 }
-                amount = roomInfoData?.moneyInTheBank - amount;
+                amount = parseFloat(roomInfoData?.moneyInTheBank) - amount;
             }
             let updatedRoomInfo = await updateRoomInitialInfoMoney(playerId, roomId, amount);
             if (updatedRoomInfo) {
