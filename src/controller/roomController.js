@@ -357,8 +357,7 @@ export const updateMoney = async (req,res) => {
     try{
         const { type, money, playerId, roomId } = req.body
         if(type && money != null && playerId && roomId){
-            let amount = parseFloat(money);
-            amount = amount.toFixed(2);
+            let amount = parseFloat(money).toFixed(2);
             if(type === "consume"){
                 const roomInfoData = await db.roomInitialInformation.findFirst({
                     where: {
@@ -376,7 +375,7 @@ export const updateMoney = async (req,res) => {
             }
             let updatedRoomInfo = await updateRoomInitialInfoMoney(playerId, roomId, amount);
             if (updatedRoomInfo) {
-                res.status(200).send({ message: "Money updated successfully!", amount});
+                res.status(200).send({ message: "Money updated successfully!", updatedRoomInfo});
             } else {
                 res.status(500).send({ message: "Failed to update money." });
             }
