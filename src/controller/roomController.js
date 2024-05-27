@@ -375,7 +375,7 @@ export const updateMoney = async (req,res) => {
             }
             let updatedRoomInfo = await updateRoomInitialInfoMoney(playerId, roomId, amount);
             if (updatedRoomInfo) {
-                res.status(200).send({ message: "Money updated successfully!", updatedRoomInfo });
+                res.status(200).send({ message: "Money updated successfully!", amount});
             } else {
                 res.status(500).send({ message: "Failed to update money." });
             }
