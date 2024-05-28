@@ -353,6 +353,8 @@ export const roomInfo = async (req, res) => {
     }
 }
 
+
+// update money in the bank according to spin wheel result
 export const updateMoney = async (req,res) => {
     try{
         const { type, money, playerId, roomId } = req.body
@@ -365,11 +367,15 @@ export const updateMoney = async (req,res) => {
                     roomId: roomId
                 },
                 select:{
-                    moneyInTheBank : true
+                    moneyInTheBank : true,
+                    isSpin : true,
                 }
             });
             if(!roomInfoData){
                 res.status(404).send({ message: "Record not found!" });  
+            }
+            if(roomInfoData?.isSpin){
+                res.status(404).send({ message: "Spinwheel already used!" });  
             }
             if(type === "consume"){   
                 amount = parseFloat(roomInfoData?.moneyInTheBank) - amount;
