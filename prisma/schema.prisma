@@ -127,6 +127,7 @@ model RoomInitialInformation {
   moneyInTheBank Float?
 
   isSingle Boolean @default(false)
+  isSpin Boolean @default(false)
 
   job Job @relation(fields: [jobId], references: [id])
   room Room @relation(fields: [roomId], references: [id])
