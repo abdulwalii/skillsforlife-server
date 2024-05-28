@@ -405,7 +405,9 @@ export const refundPurchasesIfAny = async (body) => {
                 },
                 data: {
                     refunded: true,
-                    netAmountAfterRefunded: parseFloat(newNetAmount.toFixed(2))
+                    netAmountAfterRefunded: parseFloat(newNetAmount.toFixed(2)),
+                    bankType : null,
+                    deposit : null,
                 }
             });
 

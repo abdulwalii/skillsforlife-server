@@ -374,15 +374,19 @@ export const updateMoney = async (req,res) => {
             if(!roomInfoData){
                 res.status(404).send({ message: "Record not found!" });  
             }
+            
             if(roomInfoData?.isSpin){
                 res.status(404).send({ message: "Spinwheel already used!" });  
             }
+
             if(type === "consume"){   
                 amount = parseFloat(roomInfoData?.moneyInTheBank) - amount;
             }else{
                 amount = parseFloat(roomInfoData?.moneyInTheBank) + amount;
             }
+            
             let updatedRoomInfo = await updateRoomInitialInfoMoney(playerId,roomId,amount,true);
+            
             if (updatedRoomInfo) {
                 res.status(200).send({ message: "Money updated successfully!", updatedRoomInfo});
             } else {
