@@ -398,6 +398,10 @@ export const refundPurchasesIfAny = async (body) => {
 
                 message = `${choice.name} refunded successfully.`;
             }
+            
+            if(roomStationInfoExist?.deposit > 0){
+                newNetAmount = parseFloat(newNetAmount.toFixed(2)) + parseFloat(roomStationInfoExist?.deposit?.toFixed(2));
+            }
 
             await db.roomStationInformation.update({
                 where: {
