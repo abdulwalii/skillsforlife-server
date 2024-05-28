@@ -376,7 +376,7 @@ export const updateMoney = async (req,res) => {
             }else{
                 amount = parseFloat(roomInfoData?.moneyInTheBank) + amount;
             }
-            let updatedRoomInfo = await updateRoomInitialInfoMoney(playerId, roomId, amount);
+            let updatedRoomInfo = await updateRoomInitialInfoMoney(playerId,roomId,amount,true);
             if (updatedRoomInfo) {
                 res.status(200).send({ message: "Money updated successfully!", updatedRoomInfo});
             } else {

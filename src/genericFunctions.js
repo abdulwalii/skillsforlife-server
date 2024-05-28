@@ -53,16 +53,20 @@ export const validateHash = async (password, hash) => {
     })
 } 
 
-export const updateRoomInitialInfoMoney = async (playerId, roomId, money) => {
+export const updateRoomInitialInfoMoney = async (playerId, roomId, money, isSpin = false) => {
     try {
+        let obj = {
+            moneyInTheBank: money
+        }
+        if(isSpin){
+            obj['isSpin'] = true;
+        }
         const updatedRoomInfo = await db.roomInitialInformation.updateMany({
             where: {
                 playerId: playerId,
                 roomId: roomId
             },
-            data: {
-                moneyInTheBank: money
-            }
+            data: obj
         });
         return updatedRoomInfo
     } catch (error) {
