@@ -759,6 +759,7 @@ export const previousPurchases = async (req, res) => {
         let purchases = [];
         let stations = [];
         let choices = [];
+        let refundChoices = [];
         let internalChoices = []
         
         purchases = await db.roomStationInformation.findMany({
@@ -766,7 +767,7 @@ export const previousPurchases = async (req, res) => {
                 playerId: req.params.playerId,
                 roomId: req.params.roomId,
                 stationId: req.params.stationId,
-                refunded: false
+                // refunded: false
             },
             select: {
                 stationId: true,
@@ -784,6 +785,26 @@ export const previousPurchases = async (req, res) => {
         stations = [...new Set(stations)]
         choices = [...new Set(choices)]
         internalChoices = [...new Set(internalChoices)]
+
+
+        // refundData = await db.roomStationInformation.findMany({
+        //     where: {
+        //         playerId: req.params.playerId,
+        //         roomId: req.params.roomId,
+        //         stationId: req.params.stationId,
+        //         refunded: true
+        //     },
+        //     select: {
+        //         choiceId: true,
+        //     }
+        // });
+
+        // refundData.forEach((purchase) => {
+        //     if(!refundChoices.includes(purchase?.choiceId)){
+        //         refundChoices.push(purchase.choiceId);
+        //     }
+        // })
+        // refundChoices = [...new Set(refundChoices)]
 
         res.status(200).send({stations: stations, choices: choices, internalChoices: internalChoices})
     } catch (error) {
