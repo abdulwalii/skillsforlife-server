@@ -424,7 +424,7 @@ export const withdrawDepositAmount = async (req, res) => {
             let updatedRoomInfo = await updateRoomInitialInfoMoney(playerId, roomId, parseFloat(total.toFixed(2)));
             // now null depost and bankType columns
 
-            roomStationData = await db.roomStationInformation.update({
+            await db.roomStationInformation.update({
                 where: {
                     id: roomStationInfoInfoId
                 },
@@ -449,7 +449,7 @@ export const withdrawDepositAmount = async (req, res) => {
             //     return res.status(200).send({ message: refund.message });
             // }
 
-            res.status(200).send({stationId: roomStationData?.stationId,data:roomStationData}); 
+            res.status(200).send({stationId: roomStationData?.stationId}); 
         }else {
             res.status(404).send({ message: "Room data not found or deposit is null" });
     
