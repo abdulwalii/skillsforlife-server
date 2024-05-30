@@ -767,7 +767,7 @@ export const previousPurchases = async (req, res) => {
                 playerId: req.params.playerId,
                 roomId: req.params.roomId,
                 stationId: req.params.stationId,
-                // refunded: false
+                refunded: false
             },
             select: {
                 stationId: true,
