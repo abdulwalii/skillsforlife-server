@@ -372,11 +372,11 @@ export const updateMoney = async (req,res) => {
                 }
             });
             if(!roomInfoData){
-                res.status(404).send({ message: "Record not found!" });  
+                return res.status(404).send({ message: "Record not found!" });  
             }
             
             if(roomInfoData?.isSpin){
-                res.status(404).send({ message: "Spinwheel already used!" });  
+                return res.status(404).send({ message: "Spinwheel already used!" });  
             }
 
             if(type === "consume"){   
@@ -388,15 +388,15 @@ export const updateMoney = async (req,res) => {
             let updatedRoomInfo = await updateRoomInitialInfoMoney(playerId,roomId,amount,true);
             
             if (updatedRoomInfo) {
-                res.status(200).send({ message: "Money updated successfully!", updatedRoomInfo});
+                return res.status(200).send({ message: "Money updated successfully!", updatedRoomInfo});
             } else {
-                res.status(500).send({ message: "Failed to update money." });
+                return res.status(500).send({ message: "Failed to update money." });
             }
         }else{
-            res.status(404).send({ message: "Invalid data!" });
+            return res.status(404).send({ message: "Invalid data!" });
         }
     } catch (error) {
-        res.status(400).send({message: error.message });        
+        return res.status(400).send({message: error.message });        
     }
 }
 
