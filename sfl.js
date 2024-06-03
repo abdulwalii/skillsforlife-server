@@ -21,14 +21,14 @@ let isProduction = process.env.NODE_ENV == 'production' ? true : false;
 let httpServer = null;
 
 if(isProduction){
-    // let opt = {
-    //     key: fs.readFileSync('privkey.pem'),
-    //     cert: fs.readFileSync('cert.pem')
-    // }
     let opt = {
-        key: fs.readFileSync('/etc/letsencrypt/live/skillforlifeapp.com/privkey.pem'),
-        cert: fs.readFileSync('/etc/letsencrypt/live/skillforlifeapp.com/fullchain.pem')
+        key: fs.readFileSync('privkey.pem'),
+        cert: fs.readFileSync('cert.pem')
     }
+    // let opt = {
+    //     key: fs.readFileSync('/etc/letsencrypt/live/skillforlifeapp.com/privkey.pem'),
+    //     cert: fs.readFileSync('/etc/letsencrypt/live/skillforlifeapp.com/fullchain.pem')
+    // }
     httpServer = https.createServer(opt, app);
     
  }else{
