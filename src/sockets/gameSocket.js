@@ -33,6 +33,7 @@ export const gameSocket = (io) => {
 
         // join room
         socket.on("joinRoom", async (data) => {
+            // console.log(joinRoom);
             let room = await findRoom(data.roomId);
             socket.join(room.name);
 
@@ -70,9 +71,15 @@ export const gameSocket = (io) => {
 
             let room = await findRoom(data.roomId);
             let roomUpdated = await expireRoom(data.roomId);
-            let scoreResponse = await calculateScore(data.roomId)
-
-            io.to(room.name).emit('gameOver', { status: true, roomUpdated: roomUpdated, scoreResponse: scoreResponse });
+            calculateScore(data.roomId).then((scoreResponse) => {
+                io.to(room.name).emit('gameOver', { status: true, roomUpdated: roomUpdated, scoreResponse: scoreResponse });
+            })
+            .catch((error) => {
+                // Handle error from calculateScore
+                console.error('Error calculating score:', error);
+                io.to(data.roomId).emit('error', { message: 'Failed to calculate score.' });
+            });
+            
         })
 
         // Handle custom event to leave the room

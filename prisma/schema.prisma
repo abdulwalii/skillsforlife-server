@@ -30,10 +30,11 @@ model Player {
   grade String?
   city String?
   // state String?
-  // parentFullName String?
-  // parentPhoneNumber String?
+  parentFullName String?
+  parentPhoneNumber String?
   // parentEmail String?
   // school String?
+  type String @default("session")
   
   myScore Score[] // one to many with score
   roomInitialInfo RoomInitialInformation[] // one to many with RoomInitialInformation

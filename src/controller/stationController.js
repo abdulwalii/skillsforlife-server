@@ -741,8 +741,8 @@ export const previousPurchasesForMaintenance = async (req, res) => {
 
         if (transportationData && transportationData.length > 0) {
             obj['Car Fuel'] = true;
-            obj['Car Wash'] = true;
-            obj['Car Detailing'] = true;
+            // obj['Car Wash'] = true;
+            // obj['Car Detailing'] = true;
         }
 
         res.status(200).send(obj);

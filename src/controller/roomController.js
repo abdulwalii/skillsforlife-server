@@ -197,6 +197,7 @@ export const fetchRoomInformation = async (req, res) => {
 export const calculateScore = async (roomId) => {
 
     try {
+        console.log('calculateScore : ' , roomId);
         // const {roomId} = req.body;
         let playerIds = [];
         let score = null;
@@ -281,6 +282,8 @@ export const calculateScore = async (roomId) => {
 export const getMyScore = async (req, res) => {
     try {
         const {playerId, roomId} = req.body;
+
+        console.log('getMyScore : ' , req.body);
 
         let score = await db.score.findFirst({
             where: {

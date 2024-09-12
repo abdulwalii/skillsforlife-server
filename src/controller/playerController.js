@@ -25,10 +25,11 @@ export const createOne = async (req, res) => {
                 phoneNumber: req.body.phoneNumber, // not null
                 // city: req.body.city,
                 // state: req.body.state,
-                // parentFullName: req.body.parentFullName,
+                parentFullName: req.body?.parentFullName || null,
                 // parentEmail: req.body.parentEmail,
-                // parentPhoneNumber: req.body.parentPhoneNumber,
+                parentPhoneNumber: req.body?.parentPhoneNumber || null,
                 // school: req.body.school,
+                type : req.body?.type || 'session'
             },
             include: {
                 roomInitialInfo: true,
