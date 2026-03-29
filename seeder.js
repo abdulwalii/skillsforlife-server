@@ -12,7 +12,7 @@ async function main() {
 }
 main()
   .then(async () => {
-    console.log("Database Seeded Successfully.")
+    console.log("Database Seeded Successfully..")
     await db.$disconnect()
   })
   .catch(async (e) => {
